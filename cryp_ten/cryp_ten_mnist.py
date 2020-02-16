@@ -5,8 +5,8 @@ import crypten.mpc as mpc
 import torch
 from sklearn.metrics import accuracy_score
 
-from cryp_ten.constants import NUM_SAMPLES, MNIST_WIDTH, MNIST_HEIGHT, ALICE, BOB
-from cryp_ten.plain_text_model import PlainTextNet
+from common.constants import MNIST_WIDTH, MNIST_HEIGHT, ALICE, BOB
+from common.plain_text_model import PlainTextNet
 
 
 class CrypTenMnist:
@@ -36,8 +36,7 @@ class CrypTenMnist:
         print("Model successfully encrypted:", self.private_model.encrypted)
 
     def encrypt_data(self, path_to_data, path_to_labels):
-        data_enc = crypten.load(path_to_data, src=BOB)
-        self.encrypted_data = data_enc[:NUM_SAMPLES]
+        self.encrypted_data = crypten.load(path_to_data, src=BOB)
         self.labels = torch.load(path_to_labels).long()
 
     def evaluate_model(self):
@@ -45,5 +44,5 @@ class CrypTenMnist:
         output_enc = self.private_model(self.encrypted_data)
         output = output_enc.get_plain_text()
         predictions = torch.max(output.data, 1)[1]
-        accuracy = accuracy_score(predictions, self.labels[:NUM_SAMPLES])
+        accuracy = accuracy_score(predictions, self.labels)
         print("\tAccuracy: {0:.4f}".format(accuracy))

@@ -1,3 +1,6 @@
 venv
 .idea
 cryp_ten/__pycache__/
+pysyft/__pycache__/
+pysyft/data/
+common/__pycache__/
