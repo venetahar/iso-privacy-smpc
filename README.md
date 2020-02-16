@@ -5,25 +5,22 @@ This README would normally document whatever steps are necessary to get your app
 ### What is this repository for? ###
 
 * Quick summary
+
+This repository contains code related to the Independent Study Option Module on Private Inference.
+
+The CrypTen code is largely inspired by the following tutorial:
+https://github.com/facebookresearch/CrypTen/blob/master/tutorials/Tutorial_4_Classification_with_Encrypted_Neural_Networks.ipynb
+
 * Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
 * Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+Install the necessary dependencies in the requirements file.
 
 ### Who do I talk to? ###
 
 * Repo owner or admin
-* Other community or team contact
+
+vlh19@
