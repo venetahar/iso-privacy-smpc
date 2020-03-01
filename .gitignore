@@ -4,3 +4,4 @@ cryp_ten/__pycache__/
 pysyft/__pycache__/
 pysyft/data/
 common/__pycache__/
+common/metrics/__pycache__/
