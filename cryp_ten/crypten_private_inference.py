@@ -1,19 +1,25 @@
 from cryp_ten.cryp_ten_mnist import CrypTenMnist
 from common.mnist_training import MnistTraining
 
+LENET_MODEL_PATH = '../models/alice_model.pth'
+CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'
 
-def train_plain_model():
-    mnist_training = MnistTraining()
+
+def train_plain_model(model_type='LeNet', model_path=LENET_MODEL_PATH):
+    mnist_training = MnistTraining(model_type)
     mnist_training.train()
-    mnist_training.save_model('../models/alice_model.pth')
+    mnist_training.save_model(model_path)
     mnist_training.save_labels('./data/bob')
 
 
-def evaluaute_encrypted():
-    crypten_model = CrypTenMnist()
-    crypten_model.encrypt_evaluate_model('../models/alice_model.pth', './data/bob_test.pth',
+def evaluaute_encrypted(model_type='LeNet', model_path=LENET_MODEL_PATH):
+    crypten_model = CrypTenMnist(model_type)
+    crypten_model.encrypt_evaluate_model(model_path, './data/bob_test.pth',
                                          './data/bob_test_labels.pth')
 
 
 # train_plain_model()
-evaluaute_encrypted()
+# evaluaute_encrypted()
+
+train_plain_model('ConvNet', CONVNET_MODEL_PATH)
+evaluaute_encrypted('ConvNet', CONVNET_MODEL_PATH)

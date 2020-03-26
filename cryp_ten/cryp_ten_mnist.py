@@ -7,13 +7,14 @@ import torch
 from sklearn.metrics import accuracy_score
 
 from common.constants import MNIST_WIDTH, MNIST_HEIGHT, ALICE, BOB
+from common.conv_plain_text_model import ConvPlainTextNet
 from common.metrics.time_metric import TimeMetric
-from common.plain_text_model import PlainTextNet
+from common.lenet_plain_text_model import PlainTextNet
 
 
 class CrypTenMnist:
 
-    def __init__(self):
+    def __init__(self, model_type='LeNet'):
         crypten.init()
         torch.set_num_threads(1)
         warnings.filterwarnings("ignore")
@@ -22,6 +23,7 @@ class CrypTenMnist:
         self.encrypted_data = None
         self.labels = None
         self.encrypted_labels = None
+        self.model_type = model_type
 
     # Communication is performed using PyTorch distributed backend.
     @mpc.run_multiprocess(world_size=2)
@@ -46,11 +48,17 @@ class CrypTenMnist:
         evaluate_model_metric.log()
 
     def encrypt_model(self, path_to_model):
-        dummy_model = PlainTextNet()
+        if self.model_type == 'ConvNet':
+            dummy_model = ConvPlainTextNet()
+            dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
+
+        else:
+            dummy_model = PlainTextNet()
+            dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
+
         # Note that unlike loading a tensor, the result from crypten.load is not encrypted.
         # Instead, only the src party's model is populated from the file.
         plaintext_model = crypten.load(path_to_model, dummy_model=dummy_model, src=ALICE)
-        dummy_input = torch.empty((1, MNIST_WIDTH, MNIST_HEIGHT))
 
         self.private_model = crypten.nn.from_pytorch(plaintext_model, dummy_input)
         self.private_model.encrypt(src=ALICE)
@@ -63,6 +71,7 @@ class CrypTenMnist:
 
     def evaluate_model(self):
         self.private_model.eval()
+        print(self.encrypted_data.get_plain_text().shape)
         output_enc = self.private_model(self.encrypted_data)
         # Weirdly these produce different results so for now we have to use the decrypted values
         # correct = output_enc.argmax(dim=1).eq(self.encrypted_labels).sum()

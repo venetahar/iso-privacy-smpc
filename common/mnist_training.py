@@ -3,14 +3,18 @@ from torch.nn import CrossEntropyLoss
 
 
 from common.constants import NUM_EPOCHS, LEARNING_RATE, MOMENTUM
+from common.conv_plain_text_model import ConvPlainTextNet
 from common.mnist_data_loader import MnistDataLoader
-from common.plain_text_model import PlainTextNet
+from common.lenet_plain_text_model import PlainTextNet
 
 
 class MnistTraining:
 
-    def __init__(self):
-        self.model = PlainTextNet()
+    def __init__(self, model_type='LeNet'):
+        if model_type == 'ConvNet':
+            self.model = ConvPlainTextNet()
+        else:
+            self.model = PlainTextNet()
         self.mnist_data_loader = MnistDataLoader()
         self.criterion = CrossEntropyLoss()
         self.optimizer = optim.SGD(self.model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
@@ -32,7 +36,7 @@ class MnistTraining:
             print('[%d] loss: %.3f' % (epoch + 1,  running_loss / len(self.mnist_data_loader.train_loader)))
 
     def save_labels(self, data_path):
-        save(self.mnist_data_loader.test_set.data, data_path + "_test.pth")
+        save(self.mnist_data_loader.test_set.data.unsqueeze(1), data_path + "_test.pth")
         save(self.mnist_data_loader.test_set.targets, data_path + "_test_labels.pth")
 
     def save_model(self, model_path):
