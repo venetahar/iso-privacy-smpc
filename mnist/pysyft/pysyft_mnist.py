@@ -3,9 +3,9 @@ import time
 import syft as sy
 import torch
 
-from mnist.common import TEST_BATCH_SIZE
-from mnist.common import TimeMetric
-from mnist.pysyft import PrivateMnistDataLoader
+from common.metrics.time_metric import TimeMetric
+from mnist.common.constants import TEST_BATCH_SIZE
+from mnist.pysyft.private_mnist_data_loader import PrivateMnistDataLoader
 
 
 class PysyftMnist:
@@ -52,6 +52,7 @@ class PysyftMnist:
         total_predictions = len(self.data_loader.private_test_loader) * TEST_BATCH_SIZE
         with torch.no_grad():
             for data, target in self.data_loader.private_test_loader:
+                print(data)
                 output = self.model(data)
                 pred = output.argmax(dim=1)
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()

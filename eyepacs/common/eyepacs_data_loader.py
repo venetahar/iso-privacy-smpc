@@ -21,5 +21,5 @@ class EyepacsDataLoader:
         train_set = ImageLabelDataset(csv=train_csv_path, shuffle=False, transform=self.transform, label_names=LABELS)
         self.train_loader = DataLoader(train_set, batch_size=TRAIN_BATCH_SIZE, shuffle=True, num_workers=2)
 
-        test_set = ImageLabelDataset(csv=test_csv_path, shuffle=False, transform=self.transform, label_names=LABELS)
-        self.test_loader = DataLoader(test_set, batch_size=TEST_BATCH_SIZE, shuffle=False, num_workers=2)
+        self.test_set = ImageLabelDataset(csv=test_csv_path, shuffle=False, transform=self.transform, label_names=LABELS)
+        self.test_loader = DataLoader(self.test_set, batch_size=TEST_BATCH_SIZE, shuffle=False, num_workers=2)

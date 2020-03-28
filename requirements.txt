@@ -3,5 +3,5 @@ torch
 scikit-learn
 torchvision
 tf-encrypted
-syft[udacity]
+syft
 pandas

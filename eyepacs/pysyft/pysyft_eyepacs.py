@@ -54,6 +54,7 @@ class PysyftEyepacs:
         total_predictions = len(self.data_loader.private_test_loader) * TEST_BATCH_SIZE
         with torch.no_grad():
             for data, target in self.data_loader.private_test_loader:
+                print(data)
                 output = self.model(data)
                 pred = output.argmax(dim=1)
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()

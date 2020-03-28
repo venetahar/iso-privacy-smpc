@@ -12,6 +12,8 @@ class PlainTextNet(nn.Module):
             nn.Linear(MNIST_DIMENSIONS, HIDDEN_LAYER_ONE_CHANNELS),
         )
 
+        self.relu = nn.ReLU()
+
         self.linear_two = nn.Sequential(
             nn.Linear(HIDDEN_LAYER_ONE_CHANNELS, HIDDEN_LAYER_TWO_CHANNELS),
         )
@@ -23,7 +25,7 @@ class PlainTextNet(nn.Module):
     def forward(self, x):
         x = self.linear_one(x)
         # Pysyft doesn't work with the Relu being part of the sequential module
-        x = F.relu(x)
+        x = self.relu(x)
         x = self.linear_two(x)
         x = F.relu(x)
         out = self.linear_three(x)
