@@ -2,4 +2,7 @@ venv
 .idea
 **/**/__pycache__/
 mnist/pysyft/data/
+eyepacs/eyepacs_models/
+.DS_Store
+
 

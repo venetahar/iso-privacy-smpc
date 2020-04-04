@@ -24,19 +24,18 @@ class PysyftEyepacs:
         start_time = time.time()
         self.encrypt_model(model)
         encrypt_model_metric.record(start_time, time.time())
+        encrypt_model_metric.log()
 
         encrypt_data_metric = TimeMetric("encrypt_data")
         start_time = time.time()
         self.encrypt_data()
         encrypt_data_metric.record(start_time, time.time())
+        encrypt_data_metric.log()
 
         evaluate_model_metric = TimeMetric("evaluate_model")
         start_time = time.time()
         self.evaluate()
         evaluate_model_metric.record(start_time, time.time())
-
-        encrypt_model_metric.log()
-        encrypt_data_metric.log()
         evaluate_model_metric.log()
 
     def encrypt_data(self):
@@ -54,7 +53,7 @@ class PysyftEyepacs:
         total_predictions = len(self.data_loader.private_test_loader) * TEST_BATCH_SIZE
         with torch.no_grad():
             for data, target in self.data_loader.private_test_loader:
-                print(data)
+                print("Making a prediction")
                 output = self.model(data)
                 pred = output.argmax(dim=1)
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()
