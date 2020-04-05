@@ -20,5 +20,15 @@ MOMENTUM = 0.9
 BATCH_SIZE = 8
 TEST_BATCH_SIZE = 200
 
+TRAINING_PARAMS = {
+        'learning_rate': LEARNING_RATE,
+        'momentum': MOMENTUM,
+        'num_epochs': NUM_EPOCHS
+}
+
 ALICE = 0
 BOB = 1
+
+LENET_MODEL_PATH = '../models/alice_model.pth'
+CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'
+

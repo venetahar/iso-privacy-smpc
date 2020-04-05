@@ -1,3 +1,2 @@
 PatientId,name,eye,level,level_binary,level_hot,path,path_preprocess,exists,Usage
 1,1_left,1,0,0,"[1.0, 0.0, 0.0, 0.0, 0.0]",/Users/venetaharalampieva/University/Projects/ISO/data/eyepacs/test/1_left.jpeg,/Users/venetaharalampieva/University/Projects/ISO/data/eyepacs/test/1_left.jpeg,True,Private
-1,1_right,0,0,0,"[1.0, 0.0, 0.0, 0.0, 0.0]",/Users/venetaharalampieva/University/Projects/ISO/data/eyepacs/test/1_right.jpeg,/Users/venetaharalampieva/University/Projects/ISO/data/eyepacs/test/1_right.jpeg,True,Private

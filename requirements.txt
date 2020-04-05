@@ -5,3 +5,4 @@ torchvision
 tf-encrypted
 syft
 pandas
+numpy
