@@ -1,6 +1,8 @@
 from torch import optim, save
 from torch.nn import CrossEntropyLoss
 
+from malaria.common.constants import TEST_BATCH_SIZE
+
 
 class ModelTraining:
     """
@@ -18,9 +20,13 @@ class ModelTraining:
         self.data_loader = data_loader
         self.training_parameters = training_parameters
         self.criterion = criterion
-        self.optimizer = optim.SGD(self.model.parameters(),
-                                   lr=self.training_parameters['learning_rate'],
-                                   momentum=self.training_parameters['momentum'])
+        if self.training_parameters['optim'] == 'Adam':
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.training_parameters['learning_rate'])
+            print("Using Adam")
+        else:
+            self.optimizer = optim.SGD(self.model.parameters(),
+                                       lr=self.training_parameters['learning_rate'],
+                                       momentum=self.training_parameters['momentum'])
 
     def train(self):
         """
@@ -40,6 +46,17 @@ class ModelTraining:
 
                 self.optimizer.step()
             print('[%d] loss: %.3f' % (epoch + 1,  running_loss / len(self.data_loader.train_loader)))
+
+    def evaluate_plain_text(self):
+        correct_predictions = 0
+        total_predictions = len(self.data_loader.test_loader) * TEST_BATCH_SIZE
+        for index, (inputs, labels) in enumerate(self.data_loader.test_loader):
+            outputs = self.model(inputs)
+            pred = outputs.argmax(dim=1)
+            correct_predictions += pred.eq(labels.view_as(pred)).sum()
+
+        accuracy = 100.0 * correct_predictions / total_predictions
+        print('Test set: Accuracy: {}/{} ({:.4f}%)'.format(correct_predictions, total_predictions, accuracy))
 
     def save_model(self, model_path):
         """

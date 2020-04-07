@@ -8,4 +8,4 @@ if should_train:
     train_mnist_model('ConvNet', CONVNET_MODEL_PATH)
 
 smpc_mnist = PysyftPrivateInference(PrivateMnistDataLoader(), parameters={'test_batch_size': TEST_BATCH_SIZE})
-smpc_mnist.encrypt_evaluate_model(CONVNET_MODEL_PATH)
+smpc_mnist.perform_inference(CONVNET_MODEL_PATH)

@@ -7,8 +7,16 @@ from common.metrics.time_metric import TimeMetric
 
 
 class PysyftPrivateInference:
+    """
+    Class encapsulating the logic for performing private inference using PySyft.
+    """
 
     def __init__(self, data_loader, parameters=None):
+        """
+        Returns a PysyftPrivateInference object.
+        :param data_loader: The data loader.
+        :param parameters: Any additional parameters for inference.
+        """
         hook = sy.TorchHook(torch)
         self.client = sy.VirtualWorker(hook, id="client")
         self.bob = sy.VirtualWorker(hook, id="bob")
@@ -18,7 +26,11 @@ class PysyftPrivateInference:
         self.parameters = parameters
         self.model = None
 
-    def encrypt_evaluate_model(self, path_to_model):
+    def perform_inference(self, path_to_model):
+        """
+        Performs private inference and prints the final accuracy.
+        :param path_to_model: The path to the saved model.
+        """
         encrypt_model_metric = TimeMetric("load_model")
         start_time = time.time()
         self.encrypt_model(path_to_model)
@@ -39,19 +51,29 @@ class PysyftPrivateInference:
         evaluate_model_metric.log()
 
     def encrypt_data(self):
+        """
+        Encrypts the data.
+        """
         self.data_loader.encrypt_data(self.alice, self.bob, self.crypto_provider)
 
     def encrypt_model(self, path_to_model):
+        """
+        Encrypts the model.
+        :param path_to_model: The path to the saved model to be loaded and secret shared.
+        """
         self.model = torch.load(path_to_model)
         self.model.fix_precision().share(self.alice, self.bob, crypto_provider=self.crypto_provider)
 
     def evaluate(self):
+        """
+        Performs secure evaluation of the model.
+        """
         self.model.eval()
         private_correct_predictions = 0
         total_predictions = len(self.data_loader.private_test_loader) * self.parameters['test_batch_size']
         with torch.no_grad():
-            for data, target in self.data_loader.private_test_loader:
-                print(data)
+            for batch_index, (data, target) in enumerate(self.data_loader.private_test_loader):
+                print("Performing inference for batch {}".format(batch_index))
                 output = self.model(data)
                 pred = output.argmax(dim=1)
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()

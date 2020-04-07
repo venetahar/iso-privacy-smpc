@@ -3,8 +3,8 @@ from malaria.common.malaria_data_loader import MalariaDataLoader
 
 class PrivateMalariaDataLoader(MalariaDataLoader):
 
-    def __init__(self, data_path):
-        super(PrivateMalariaDataLoader, self).__init__(data_path)
+    def __init__(self, data_path, should_load_split=True):
+        super(PrivateMalariaDataLoader, self).__init__(data_path, should_load_split)
         self.private_test_loader = []
 
     def encrypt_data(self, party_one, party_two, crypto_provider):
