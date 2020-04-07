@@ -67,4 +67,4 @@ class MalariaDataLoader:
     def load_indices():
         train_indices = loadtxt('../data/train_indices.csv', delimiter=',')
         test_indices = loadtxt('../data/test_indices.csv', delimiter=',')
-        return train_indices, test_indices
+        return train_indices.astype(int), test_indices.astype(int)

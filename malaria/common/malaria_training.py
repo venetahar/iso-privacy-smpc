@@ -2,6 +2,7 @@ from common.model_training.model_training import ModelTraining
 from malaria.common.constants import TRAINING_PARAMS
 from malaria.common.conv_net import ConvNet
 from malaria.common.malaria_data_loader import MalariaDataLoader
+import torch
 
 
 def train_malaria_model(model_path, data_path):
@@ -12,3 +13,10 @@ def train_malaria_model(model_path, data_path):
     malaria_training.train()
     malaria_training.evaluate_plain_text()
     malaria_training.save_model(model_path)
+
+
+def evaluate_plain_text(model_path, data_loader):
+    model = torch.load(model_path)
+    malaria_training = ModelTraining(model, data_loader, training_parameters=TRAINING_PARAMS)
+    malaria_training.evaluate_plain_text()
+

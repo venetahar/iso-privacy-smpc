@@ -35,19 +35,18 @@ class PysyftPrivateInference:
         start_time = time.time()
         self.encrypt_model(path_to_model)
         encrypt_model_metric.record(start_time, time.time())
+        encrypt_model_metric.log()
 
         encrypt_data_metric = TimeMetric("encrypt_data")
         start_time = time.time()
         self.encrypt_data()
         encrypt_data_metric.record(start_time, time.time())
+        encrypt_data_metric.log()
 
         evaluate_model_metric = TimeMetric("evaluate_model")
         start_time = time.time()
         self.evaluate()
         evaluate_model_metric.record(start_time, time.time())
-
-        encrypt_model_metric.log()
-        encrypt_data_metric.log()
         evaluate_model_metric.log()
 
     def encrypt_data(self):
@@ -76,6 +75,8 @@ class PysyftPrivateInference:
                 print("Performing inference for batch {}".format(batch_index))
                 output = self.model(data)
                 pred = output.argmax(dim=1)
+                print("Predictions: {}".format(pred.get().float_precision()))
+                print("Labels: {}".format(target.get().float_precision()))
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()
 
             correct_predictions = private_correct_predictions.copy().get().float_precision().long().item()

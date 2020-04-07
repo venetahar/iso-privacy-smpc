@@ -50,9 +50,12 @@ class ModelTraining:
     def evaluate_plain_text(self):
         correct_predictions = 0
         total_predictions = len(self.data_loader.test_loader) * TEST_BATCH_SIZE
+        self.model.eval()
         for index, (inputs, labels) in enumerate(self.data_loader.test_loader):
             outputs = self.model(inputs)
             pred = outputs.argmax(dim=1)
+            print("Predictions: {}".format(pred))
+            print("Labels: {}".format(labels))
             correct_predictions += pred.eq(labels.view_as(pred)).sum()
 
         accuracy = 100.0 * correct_predictions / total_predictions
