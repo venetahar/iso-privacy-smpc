@@ -53,7 +53,7 @@ class PysyftPrivateInference:
         """
         Encrypts the data.
         """
-        self.data_loader.encrypt_data(self.alice, self.bob, self.crypto_provider)
+        self.data_loader.encrypt_test_data(self.alice, self.bob, self.crypto_provider)
 
     def encrypt_model(self, path_to_model):
         """

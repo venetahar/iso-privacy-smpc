@@ -1,82 +1,32 @@
-import time
-import warnings
-
-import crypten
-import crypten.mpc as mpc
 import torch
-from sklearn.metrics import accuracy_score
 
-from common.metrics.time_metric import TimeMetric
-from mnist.common.constants import MNIST_WIDTH, MNIST_HEIGHT, ALICE, BOB
 from mnist.common.conv_plain_text_model import ConvPlainTextNet
 from mnist.common.lenet_plain_text_model import PlainTextNet
+from mnist.common.mnist_training import train_mnist_model
+from mnist.cryp_ten.crypten_private_inference import CryptenPrivateInference
+from mnist.common.constants import LENET_MODEL_PATH, CONVNET_MODEL_PATH, MNIST_WIDTH, MNIST_HEIGHT
 
 
-class CrypTenMnist:
+def evaluate_encrypted(model_type='LeNet', model_path=LENET_MODEL_PATH):
+    dummy_input, dummy_model = get_dummy_values(model_type)
+    crypten_model = CryptenPrivateInference(dummy_model, dummy_input, './data/bob_test.pth',
+                                            './data/bob_test_labels.pth')
+    crypten_model.perform_inference(model_path)
 
-    def __init__(self, model_type='LeNet'):
-        crypten.init()
-        torch.set_num_threads(1)
-        warnings.filterwarnings("ignore")
 
-        self.private_model = None
-        self.encrypted_data = None
-        self.labels = None
-        self.encrypted_labels = None
-        self.model_type = model_type
+def get_dummy_values(model_type):
+    if model_type == 'ConvNet':
+        dummy_model = ConvPlainTextNet()
+        dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
 
-    # Communication is performed using PyTorch distributed backend.
-    @mpc.run_multiprocess(world_size=2)
-    def encrypt_evaluate_model(self, path_to_model, path_to_data, path_to_labels):
-        encrypt_model_metric = TimeMetric("encrypt_model")
-        start_time = time.time()
-        self.encrypt_model(path_to_model)
-        encrypt_model_metric.record(start_time, time.time())
+    else:
+        dummy_model = PlainTextNet()
+        dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
+    return dummy_input, dummy_model
 
-        encrypt_data_metric = TimeMetric("encrypt_data")
-        start_time = time.time()
-        self.encrypt_data(path_to_data, path_to_labels)
-        encrypt_data_metric.record(start_time, time.time())
 
-        evaluate_model_metric = TimeMetric("evaluate_model")
-        start_time = time.time()
-        self.evaluate_model()
-        evaluate_model_metric.record(start_time, time.time())
-
-        encrypt_model_metric.log()
-        encrypt_data_metric.log()
-        evaluate_model_metric.log()
-
-    def encrypt_model(self, path_to_model):
-        if self.model_type == 'ConvNet':
-            dummy_model = ConvPlainTextNet()
-            dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
-
-        else:
-            dummy_model = PlainTextNet()
-            dummy_input = torch.empty((1, 1, MNIST_WIDTH, MNIST_HEIGHT))
-
-        # Note that unlike loading a tensor, the result from crypten.load is not encrypted.
-        # Instead, only the src party's model is populated from the file.
-        plaintext_model = crypten.load(path_to_model, dummy_model=dummy_model, src=ALICE)
-
-        self.private_model = crypten.nn.from_pytorch(plaintext_model, dummy_input)
-        self.private_model.encrypt(src=ALICE)
-        print("Model successfully encrypted:", self.private_model.encrypted)
-
-    def encrypt_data(self, path_to_data, path_to_labels):
-        self.encrypted_data = crypten.load(path_to_data, src=BOB)
-        self.encrypted_labels = crypten.load(path_to_labels, src=BOB)
-        self.labels = torch.load(path_to_labels).long()
-
-    def evaluate_model(self):
-        self.private_model.eval()
-        output_enc = self.private_model(self.encrypted_data)
-        # Weirdly these produce different results so for now we have to use the decrypted values
-        # correct = output_enc.argmax(dim=1).eq(self.encrypted_labels).sum()
-        # print(correct.get_plain_text())
-        # print(output_enc.argmax(dim=1).get_plain_text().eq(self.encrypted_labels.get_plain_text()).sum())
-        output = output_enc.get_plain_text()
-        predictions = torch.max(output.data, 1)[1]
-        accuracy = accuracy_score(predictions, self.labels)
-        print("\tAccuracy: {0:.4f}".format(accuracy))
+should_train = True
+if should_train:
+    train_mnist_model('ConvNet', CONVNET_MODEL_PATH)
+evaluate_encrypted('ConvNet', CONVNET_MODEL_PATH)
+# evaluate_encrypted('LeNet', LENET_MODEL_PATH)

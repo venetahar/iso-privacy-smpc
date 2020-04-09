@@ -4,8 +4,8 @@ from torchvision import datasets
 from torchvision.transforms import transforms
 import numpy as np
 from numpy.random import shuffle
-from numpy import savetxt, loadtxt
 
+from common.utils.data_utils import DataUtils
 from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE, TEST_BATCH_SIZE, \
     TRAIN_PERCENTAGE
 
@@ -40,7 +40,7 @@ class MalariaDataLoader:
         :return: The train and test samplers based on the data.
         """
         if should_load_split:
-            train_indices, test_indices = MalariaDataLoader.load_indices()
+            train_indices, test_indices = DataUtils.load_indices('../data/')
         else:
             train_indices, test_indices = MalariaDataLoader.generate_train_test_split(data)
         train_sampler = SubsetRandomSampler(train_indices)
@@ -50,21 +50,15 @@ class MalariaDataLoader:
 
     @staticmethod
     def generate_train_test_split(data):
+        """
+        Generates train and test splits and saves them to csv files for future use.
+        :param data: The data to split.
+        :return: train and test indices for the split.
+        """
         num_samples = len(data)
         indices = list(range(num_samples))
         num_train_samples = int(np.floor(TRAIN_PERCENTAGE * num_samples))
         shuffle(indices)
         train_indices, test_indices = indices[:num_train_samples], indices[num_train_samples:]
-        MalariaDataLoader.save_indices(train_indices, test_indices)
+        DataUtils.save_indices(train_indices, test_indices, '../data/')
         return train_indices, test_indices
-
-    @staticmethod
-    def save_indices(train_indices, test_indices):
-        savetxt('../data/train_indices.csv', train_indices, delimiter=',', fmt='%i')
-        savetxt('../data/test_indices.csv', test_indices, delimiter=',', fmt='%i')
-
-    @staticmethod
-    def load_indices():
-        train_indices = loadtxt('../data/train_indices.csv', delimiter=',')
-        test_indices = loadtxt('../data/test_indices.csv', delimiter=',')
-        return train_indices.astype(int), test_indices.astype(int)

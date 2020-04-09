@@ -6,8 +6,14 @@ from mnist.common.constants import BATCH_SIZE, TEST_BATCH_SIZE
 
 
 class MnistDataLoader:
+    """
+    A simple MNIST data loader.
+    """
 
     def __init__(self):
+        """
+        Creates an MnistDataLoader which has a train and a test loader.
+        """
         self.transform = transforms.Compose(
             [transforms.ToTensor()]
         )

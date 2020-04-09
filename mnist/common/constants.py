@@ -5,7 +5,7 @@ MNIST_HEIGHT = 28
 HIDDEN_LAYER_ONE_CHANNELS = 128
 HIDDEN_LAYER_TWO_CHANNELS = 128
 
-# Conv Net
+# ConvNet
 CONV_ONE_FILTERS = 5
 KERNEL_SIZE = 5
 STRIDE = 2
@@ -13,7 +13,6 @@ STRIDE = 2
 FC_LAYER_ONE_UNITS = 100
 
 NUM_CLASSES = 10
-NUM_SAMPLES = 100
 NUM_EPOCHS = 10
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
@@ -24,7 +23,8 @@ TRAINING_PARAMS = {
         'learning_rate': LEARNING_RATE,
         'momentum': MOMENTUM,
         'num_epochs': NUM_EPOCHS,
-        'optim': 'SGD'
+        'optim': 'SGD',
+        'test_batch_size': TEST_BATCH_SIZE
 }
 
 ALICE = 0

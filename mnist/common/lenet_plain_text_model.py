@@ -12,8 +12,6 @@ class PlainTextNet(nn.Module):
             nn.Linear(MNIST_DIMENSIONS, HIDDEN_LAYER_ONE_CHANNELS),
         )
 
-        self.relu = nn.ReLU()
-
         self.linear_two = nn.Sequential(
             nn.Linear(HIDDEN_LAYER_ONE_CHANNELS, HIDDEN_LAYER_TWO_CHANNELS),
         )

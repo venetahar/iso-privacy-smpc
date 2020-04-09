@@ -10,7 +10,8 @@ TRAINING_PARAMS = {
     'learning_rate': 0.001,
     'momentum': 0.9,
     'num_epochs': 20,
-    'optim': 'Adam'
+    'optim': 'Adam',
+    'test_batch_size': TEST_BATCH_SIZE
 }
 
 CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'

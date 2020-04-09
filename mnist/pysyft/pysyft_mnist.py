@@ -3,7 +3,7 @@ from mnist.common.mnist_training import train_mnist_model
 from common.pysyft.pysyft_private_inference import PysyftPrivateInference
 from mnist.pysyft.private_mnist_data_loader import PrivateMnistDataLoader
 
-should_train = True
+should_train = False
 if should_train:
     train_mnist_model('ConvNet', CONVNET_MODEL_PATH)
 
