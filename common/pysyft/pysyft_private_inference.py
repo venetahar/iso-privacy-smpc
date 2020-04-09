@@ -75,8 +75,6 @@ class PysyftPrivateInference:
                 print("Performing inference for batch {}".format(batch_index))
                 output = self.model(data)
                 pred = output.argmax(dim=1)
-                print("Predictions: {}".format(pred.get().float_precision()))
-                print("Labels: {}".format(target.get().float_precision()))
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()
 
             correct_predictions = private_correct_predictions.copy().get().float_precision().long().item()

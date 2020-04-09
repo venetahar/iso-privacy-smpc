@@ -23,7 +23,8 @@ TEST_BATCH_SIZE = 200
 TRAINING_PARAMS = {
         'learning_rate': LEARNING_RATE,
         'momentum': MOMENTUM,
-        'num_epochs': NUM_EPOCHS
+        'num_epochs': NUM_EPOCHS,
+        'optim': 'SGD'
 }
 
 ALICE = 0

@@ -60,8 +60,8 @@ class MalariaDataLoader:
 
     @staticmethod
     def save_indices(train_indices, test_indices):
-        savetxt('../data/train_indices.csv', train_indices, delimiter=',')
-        savetxt('../data/test_indices.csv', test_indices, delimiter=',')
+        savetxt('../data/train_indices.csv', train_indices, delimiter=',', fmt='%i')
+        savetxt('../data/test_indices.csv', test_indices, delimiter=',', fmt='%i')
 
     @staticmethod
     def load_indices():
