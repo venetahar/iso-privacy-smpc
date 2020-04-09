@@ -19,24 +19,19 @@ class ConvNet(nn.Module):
         """
         super(ConvNet, self).__init__()
 
-        self.avg_pool_sizes = avg_pool_sizes
+        self.conv_1 = nn.Conv2d(in_channels=in_channels, out_channels=channels[0],
+                                kernel_size=conv_kernel_sizes[0], stride=1)
 
-        self.conv_1 = nn.Sequential(
-            nn.Conv2d(in_channels=in_channels, out_channels=channels[0], kernel_size=conv_kernel_sizes[0], stride=1),
-        )
+        self.avg_pool_1 = nn.AvgPool2d(kernel_size=avg_pool_sizes[0])
 
-        self.conv_2 = nn.Sequential(
-            nn.Conv2d(in_channels=channels[0], out_channels=channels[1], kernel_size=conv_kernel_sizes[1], stride=1),
-        )
+        self.conv_2 = nn.Conv2d(in_channels=channels[0], out_channels=channels[1],
+                                kernel_size=conv_kernel_sizes[1], stride=1)
 
-        self.fc_1 = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(channels[1]*5*5, fc_units[0]),
-        )
+        self.avg_pool_2 = nn.AvgPool2d(kernel_size=avg_pool_sizes[1])
 
-        self.fc_2 = nn.Sequential(
-            nn.Linear(fc_units[0], num_classes),
-        )
+        self.flatten = nn.Flatten()
+        self.linear_1 = nn.Linear(channels[1]*5*5, fc_units[0])
+        self.linear_2 = nn.Linear(fc_units[0], num_classes)
 
     def forward(self, x):
         """
@@ -48,15 +43,16 @@ class ConvNet(nn.Module):
         x = self.conv_1(x)
         # PySyft doesn't work with the ReLU being part of the sequential module
         x = F.relu(x)
-        x = F.avg_pool2d(x, kernel_size=self.avg_pool_sizes[0])
+        x = self.avg_pool_1(x)
 
         x = self.conv_2(x)
         x = F.relu(x)
-        x = F.avg_pool2d(x, kernel_size=self.avg_pool_sizes[1])
+        x = self.avg_pool_2(x)
 
-        x = self.fc_1(x)
+        x = self.flatten(x)
+        x = self.linear_1(x)
         x = F.relu(x)
 
-        out = self.fc_2(x)
+        out = self.linear_2(x)
 
         return out

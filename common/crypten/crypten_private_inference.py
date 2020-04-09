@@ -3,7 +3,6 @@ import warnings
 import crypten
 import crypten.mpc as mpc
 import torch
-from sklearn.metrics import accuracy_score
 
 from common.crypten.constants import ALICE, BOB
 from common.private_inference import PrivateInference
@@ -14,13 +13,13 @@ class CryptenPrivateInference(PrivateInference):
     Class encapsulating the logic for performing private inference using Crypten.
     """
 
-    def __init__(self, dummy_model, dummy_input, path_to_data, path_to_labels):
+    def __init__(self, dummy_model, dummy_input, data_loader, parameters):
         """
         Creates a CryptenPrivateInference.
         :param dummy_model: The dummy model, required by Crypten.
         :param dummy_input: The dummy input, required by Crypten.
-        :param path_to_data: The path to the data.
-        :param path_to_labels: The path to the labels.
+        :param data_loader: The data_loader.
+        :param parameters: The parameters.
         """
         crypten.init()
         torch.set_num_threads(1)
@@ -28,13 +27,10 @@ class CryptenPrivateInference(PrivateInference):
 
         self.dummy_model = dummy_model
         self.dummy_input = dummy_input
-        self.path_to_data = path_to_data
-        self.path_to_labels = path_to_labels
+        self.data_loader = data_loader
+        self.parameters = parameters
 
         self.private_model = None
-        self.encrypted_data = None
-        self.labels = None
-        self.encrypted_labels = None
 
     # Communication is performed using PyTorch distributed backend.
     @mpc.run_multiprocess(world_size=2)
@@ -58,21 +54,21 @@ class CryptenPrivateInference(PrivateInference):
         """
         Encrypts the data.
         """
-        self.encrypted_data = crypten.load(self.path_to_data, src=BOB)
-        self.encrypted_labels = crypten.load(self.path_to_labels, src=BOB)
-        self.labels = torch.load(self.path_to_labels).long()
+        self.data_loader.encrypt_test_data(BOB)
 
     def evaluate(self):
         """
         Performs secure evaluation of the model.
         """
         self.private_model.eval()
-        output_enc = self.private_model(self.encrypted_data)
-        # Weirdly these produce different results so for now we have to use the decrypted values
-        # correct = output_enc.argmax(dim=1).eq(self.encrypted_labels).sum()
-        # print(correct.get_plain_text())
-        # print(output_enc.argmax(dim=1).get_plain_text().eq(self.encrypted_labels.get_plain_text()).sum())
-        output = output_enc.get_plain_text()
-        predictions = torch.max(output.data, 1)[1]
-        accuracy = accuracy_score(predictions, self.labels)
-        print("\tAccuracy: {0:.4f}".format(accuracy))
+        correct_predictions = 0
+        total_predictions = len(self.data_loader.private_test_loader) * self.parameters['test_batch_size']
+        for batch_index, (data, target) in enumerate(self.data_loader.private_test_loader):
+            output_enc = self.private_model(data)
+            # Weirdly these produce different results so for now we have to use the decrypted values
+            # correct = output_enc.argmax(dim=1).eq(self.encrypted_labels).sum()
+            # print(correct.get_plain_text())
+            correct_predictions += output_enc.argmax(dim=1).get_plain_text().eq(target.get_plain_text()).sum()
+
+        accuracy = 100.0 * correct_predictions / total_predictions
+        print('Test set: Accuracy: {}/{} ({:.4f}%)'.format(correct_predictions, total_predictions, accuracy))
