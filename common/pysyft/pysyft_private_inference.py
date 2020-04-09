@@ -1,12 +1,10 @@
-import time
-
 import syft as sy
 import torch
 
-from common.metrics.time_metric import TimeMetric
+from common.private_inference import PrivateInference
 
 
-class PysyftPrivateInference:
+class PysyftPrivateInference(PrivateInference):
     """
     Class encapsulating the logic for performing private inference using PySyft.
     """
@@ -25,29 +23,6 @@ class PysyftPrivateInference:
         self.data_loader = data_loader
         self.parameters = parameters
         self.model = None
-
-    def perform_inference(self, path_to_model):
-        """
-        Performs private inference and prints the final accuracy.
-        :param path_to_model: The path to the saved model.
-        """
-        encrypt_model_metric = TimeMetric("load_model")
-        start_time = time.time()
-        self.encrypt_model(path_to_model)
-        encrypt_model_metric.record(start_time, time.time())
-        encrypt_model_metric.log()
-
-        encrypt_data_metric = TimeMetric("encrypt_data")
-        start_time = time.time()
-        self.encrypt_data()
-        encrypt_data_metric.record(start_time, time.time())
-        encrypt_data_metric.log()
-
-        evaluate_model_metric = TimeMetric("evaluate_model")
-        start_time = time.time()
-        self.evaluate()
-        evaluate_model_metric.record(start_time, time.time())
-        evaluate_model_metric.log()
 
     def encrypt_data(self):
         """

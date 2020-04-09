@@ -1,8 +1,6 @@
 import torch
 
-from common.ResNetCopy import resnext50_32x4d
-from eyepacs.common.constants import TEST_CSV_PATH_1
-from eyepacs.common.eyepacs_data_loader import EyepacsDataLoader
+from eyepacs.common.ResNetCopy import resnext50_32x4d
 from eyepacs.pysyft.pysyft_eyepacs import PysyftEyepacs
 
 NUM_CLASSES = 5

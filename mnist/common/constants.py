@@ -27,9 +27,8 @@ TRAINING_PARAMS = {
         'test_batch_size': TEST_BATCH_SIZE
 }
 
-ALICE = 0
-BOB = 1
-
-LENET_MODEL_PATH = '../models/alice_model.pth'
+FC_MODEL_PATH = '../models/alice_model.pth'
 CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'
 
+FC_MODEL_TYPE = 'FC'
+CONV_MODEL_TYPE = 'Conv'
