@@ -1,6 +1,7 @@
 import warnings
 
 import crypten
+import logging
 import crypten.mpc as mpc
 import torch
 
@@ -22,6 +23,9 @@ class CryptenPrivateInference(PrivateInference):
         :param parameters: The parameters.
         """
         crypten.init()
+        # Set the logging level to INFO to be able to display the communication costs
+        level = logging.INFO
+        logging.getLogger().setLevel(level)
         torch.set_num_threads(1)
         warnings.filterwarnings("ignore")
 
@@ -35,7 +39,11 @@ class CryptenPrivateInference(PrivateInference):
     # Communication is performed using PyTorch distributed backend.
     @mpc.run_multiprocess(world_size=2)
     def perform_inference(self, path_to_model):
+        # Set the verbosity of the communicator to True, needed to ensure that costs will be logged.
+        crypten.comm.get().set_verbosity(True)
         super().perform_inference(path_to_model)
+
+        crypten.print_communication_stats()
 
     def encrypt_model(self, path_to_model):
         """
