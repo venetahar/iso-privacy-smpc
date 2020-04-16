@@ -12,7 +12,7 @@ class ConvModel(nn.Module):
         self.conv_1 = nn.Conv2d(in_channels=1, out_channels=CONV_ONE_FILTERS,
                                 kernel_size=KERNEL_SIZE, stride=STRIDE, padding=1)
 
-        self.avg_pool = nn.AvgPool2d(kernel_size=2)
+        self.max_pool = nn.MaxPool2d(kernel_size=2)
 
         self.flatten = nn.Flatten()
 
@@ -22,7 +22,7 @@ class ConvModel(nn.Module):
     def forward(self, x):
         x = self.conv_1(x)
         x = F.relu(x)
-        x = self.avg_pool(x)
+        x = self.max_pool(x)
 
         x = self.flatten(x)
         x = self.linear_1(x)

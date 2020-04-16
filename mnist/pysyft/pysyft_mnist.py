@@ -5,7 +5,7 @@ from mnist.pysyft.private_mnist_data_loader import PrivateMnistDataLoader
 
 should_train = False
 if should_train:
-    train_mnist_model(CONV_MODEL_TYPE, CONVNET_MODEL_PATH)
+    train_mnist_model(CONV_MODEL_TYPE, 'mnist/models/alice_conv_model.pth')
 
 smpc_mnist = PysyftPrivateInference(PrivateMnistDataLoader(), parameters={'test_batch_size': TEST_BATCH_SIZE})
-smpc_mnist.perform_inference(CONVNET_MODEL_PATH)
+smpc_mnist.perform_inference('mnist/models/alice_conv_model.pth')
