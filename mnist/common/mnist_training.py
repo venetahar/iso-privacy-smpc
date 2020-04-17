@@ -1,12 +1,11 @@
 from common.model_training.model_training import ModelTraining
-from common.utils.data_utils import DataUtils
-from mnist.common.constants import FC_MODEL_PATH, TRAINING_PARAMS, CONV_MODEL_TYPE, FC_MODEL_TYPE
+from mnist.common.constants import TRAINING_PARAMS, MNIST_CONV_MODEL_TYPE
 from mnist.common.conv_model import ConvModel
 from mnist.common.fully_connected_model import FullyConnectedModel
 from mnist.common.mnist_data_loader import MnistDataLoader
 
 
-def train_mnist_model(model_type=FC_MODEL_TYPE, model_path=FC_MODEL_PATH):
+def train_mnist_model(model_type, model_path):
     """
     Trains an mnist model.
     :param model_type: The model type, default: LeNet
@@ -18,7 +17,6 @@ def train_mnist_model(model_type=FC_MODEL_TYPE, model_path=FC_MODEL_PATH):
     mnist_training.train()
     mnist_training.save_model(model_path)
     mnist_training.evaluate_plain_text()
-    DataUtils.save_data('./data/bob', mnist_data_loader.test_set)
 
 
 def get_model(model_type):
@@ -27,7 +25,7 @@ def get_model(model_type):
     :param model_type: The model type.
     :return: The specified model.
     """
-    if model_type == CONV_MODEL_TYPE:
+    if model_type == MNIST_CONV_MODEL_TYPE:
         model = ConvModel()
     else:
         model = FullyConnectedModel()

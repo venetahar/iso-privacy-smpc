@@ -14,4 +14,3 @@ TRAINING_PARAMS = {
     'test_batch_size': TEST_BATCH_SIZE
 }
 
-CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'

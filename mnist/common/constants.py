@@ -1,4 +1,4 @@
-# LeNet
+# FCNet
 MNIST_DIMENSIONS = 784
 MNIST_WIDTH = 28
 MNIST_HEIGHT = 28
@@ -13,22 +13,17 @@ STRIDE = 2
 FC_LAYER_ONE_UNITS = 100
 
 NUM_CLASSES = 10
-NUM_EPOCHS = 10
-LEARNING_RATE = 0.001
-MOMENTUM = 0.9
-BATCH_SIZE = 8
+BATCH_SIZE = 128
 TEST_BATCH_SIZE = 200
 
 TRAINING_PARAMS = {
-        'learning_rate': LEARNING_RATE,
-        'momentum': MOMENTUM,
-        'num_epochs': NUM_EPOCHS,
-        'optim': 'SGD',
+        'learning_rate': 0.001,
+        'momentum': 0.9,
+        'num_epochs': 10,
+        'optim': 'Adam',
         'test_batch_size': TEST_BATCH_SIZE
 }
 
-FC_MODEL_PATH = '../models/alice_model.pth'
-CONVNET_MODEL_PATH = '../models/alice_conv_model.pth'
+MNIST_CONV_MODEL_TYPE = 'Conv'
+MNIST_FC_MODEL_TYPE = 'FC'
 
-FC_MODEL_TYPE = 'FC'
-CONV_MODEL_TYPE = 'Conv'

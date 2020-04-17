@@ -2,8 +2,6 @@
 
 ### What is this repository for? ###
 
-* Quick summary
-
 This repository contains code related to the Independent Study Option Module on Private Inference.
 
 The PySyft code is based on the following tutorial:
@@ -16,11 +14,10 @@ https://github.com/facebookresearch/CrypTen/blob/master/tutorials/Tutorial_4_Cla
 
 Install the necessary dependencies in the requirements file. 
 
-The repository contains experiments on the MNIST dataset, the Malaria dataset and 
-the Diabetics dataset (these are not working correctly at the moment).
+The repository contains experiments on the MNIST dataset and the Malaria dataset.
 
-Both the MNIST and Malaria dataset private inference can be run both using CrypTen and PySyft. 
-1. To run MNIST using PySyft launch the following file: mnist/pysyft/pysyft_mnist.py
-2. To run MNIST using CrypTen launch the following file: mnist/cryp_ten/crypten_mnist.py
-3. To run Malaria using PySyft launch the following file: malaria/pysyft/pysyft_malaria.py
-4. To run Malaria using CrypTen launch the following file: malaria/crypten/crypten_malaria.py
+The main.py file contains the code required to run the mnist and malaria experiments using both PySyft and CrypTen. 
+By default it runs all mnist and malaria experiments without retraining the model. If you wish to retrain the model 
+invoke the method using should_retrain_model=True.
+
+If running from the command line ```python3 main.py``` from the root of the project. 
