@@ -37,5 +37,5 @@ def run_malaria_experiment(should_retrain_model=False):
 
 
 # run_mnist_fully_connected_experiment(False)
-run_mnist_conv_experiment(True)
-# run_malaria_experiment(True)
+# run_mnist_conv_experiment(True)
+run_malaria_experiment()
