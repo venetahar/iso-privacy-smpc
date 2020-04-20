@@ -5,7 +5,7 @@ import logging
 import crypten.mpc as mpc
 import torch
 
-from common.crypten.constants import ALICE, BOB
+from common.constants import ALICE, BOB
 from common.private_inference import PrivateInference
 
 

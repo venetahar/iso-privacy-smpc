@@ -1,29 +1,13 @@
-# FCNet
-MNIST_DIMENSIONS = 784
-MNIST_WIDTH = 28
-MNIST_HEIGHT = 28
-HIDDEN_LAYER_ONE_CHANNELS = 128
-HIDDEN_LAYER_TWO_CHANNELS = 128
-
-# ConvNet
-CONV_ONE_FILTERS = 5
-KERNEL_SIZE = 5
-STRIDE = 2
-
-FC_LAYER_ONE_UNITS = 100
-
+MNIST_DIMENSIONS = (28, 28, 1)
 NUM_CLASSES = 10
+
 BATCH_SIZE = 128
 TEST_BATCH_SIZE = 200
 
 TRAINING_PARAMS = {
         'learning_rate': 0.001,
         'momentum': 0.9,
-        'num_epochs': 10,
+        'num_epochs': 15,
         'optim': 'Adam',
         'test_batch_size': TEST_BATCH_SIZE
 }
-
-MNIST_CONV_MODEL_TYPE = 'Conv'
-MNIST_FC_MODEL_TYPE = 'FC'
-

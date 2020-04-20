@@ -42,7 +42,7 @@ class MalariaDataLoader:
         if should_load_split:
             train_indices, test_indices = DataUtils.load_indices(self.data_path)
         else:
-            train_indices, test_indices = MalariaDataLoader.generate_train_test_split(data)
+            train_indices, test_indices = MalariaDataLoader.generate_train_test_split(self, data)
         train_sampler = SubsetRandomSampler(train_indices)
         test_sampler = SubsetRandomSampler(test_indices)
 

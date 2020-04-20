@@ -1,39 +1,41 @@
+from common.constants import FULLY_CONNECTED3_MODEL_TYPE, CONV_1_MODEL_TYPE
+from malaria.common.malaria_training import train_malaria_model
 from malaria.crypten.crypten_malaria import run_crypten_malaria_experiment
 from malaria.pysyft.pysyft_malaria import run_pysyft_malaria_experiment
-from mnist.common.constants import MNIST_FC_MODEL_TYPE, MNIST_CONV_MODEL_TYPE
-from mnist.cryp_ten.crypten_mnist import run_crypten_mnist_experiment
+from mnist.common.mnist_training import train_mnist_model
+from mnist.crypten.crypten_mnist import run_crypten_mnist_experiment
 from mnist.pysyft.pysyft_mnist import run_pysyft_mnist_experiment
 
 
-MNIST_FC_MODEL_PATH = 'mnist/models/alice_fc_model.pth'
-MNIST_CONVNET_MODEL_PATH = 'mnist/models/alice_conv_model.pth'
+MNIST_FC_MODEL_PATH = 'mnist/models/alice_fc3_model.pth'
+MNIST_CONVNET_MODEL_PATH = 'mnist/models/alice_conv1_model.pth'
+MNIST_DATA_PATH = 'mnist/data/'
 
 MALARIA_DATA_PATH = 'malaria/data/'
-MALARIA_CONVNET_MODEL_PATH = 'malaria/models/alice_conv_model.pth'
+MALARIA_CONVNET_MODEL_PATH = 'malaria/models/alice_convpool_model.pth'
 
 
-def run_pysyft_experiment(experiment_type, should_retrain_model=False):
-    if experiment_type == 'mnist':
-        run_pysyft_mnist_experiment(MNIST_FC_MODEL_TYPE, MNIST_FC_MODEL_PATH, should_retrain_model)
-        run_pysyft_mnist_experiment(MNIST_CONV_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, should_retrain_model)
-    elif experiment_type == 'malaria':
-        run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH, should_retrain_model)
-    else:
-        print("Please provide a valid experiment type")
+def run_mnist_fully_connected_experiment(should_retrain_model=False):
+    if should_retrain_model:
+        train_mnist_model(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
 
 
-def run_crypten_experiments(experiment_type, should_retrain_model=False):
-    if experiment_type == 'mnist':
-        run_crypten_mnist_experiment(MNIST_FC_MODEL_TYPE, MNIST_FC_MODEL_PATH, should_retrain_model)
-        run_crypten_mnist_experiment(MNIST_CONV_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, should_retrain_model)
-    elif experiment_type == 'malaria':
-        run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH, should_retrain_model)
-    else:
-        print("Please provide a valid experiment type")
+def run_mnist_conv_experiment(should_retrain_model=False):
+    if should_retrain_model:
+        train_mnist_model(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
 
 
-run_pysyft_experiment('mnist')
-run_crypten_experiments('mnist')
+def run_malaria_experiment(should_retrain_model=False):
+    if should_retrain_model:
+        train_malaria_model(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
-run_pysyft_experiment('malaria')
-run_crypten_experiments('malaria')
+
+# run_mnist_fully_connected_experiment(False)
+run_mnist_conv_experiment(True)
+# run_malaria_experiment(True)

@@ -1,6 +1,5 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from mnist.common.constants import MNIST_DIMENSIONS, HIDDEN_LAYER_ONE_CHANNELS, HIDDEN_LAYER_TWO_CHANNELS, NUM_CLASSES
 
 
 class FullyConnectedModel(nn.Module):
@@ -8,17 +7,23 @@ class FullyConnectedModel(nn.Module):
     Fully connected model.
     """
 
-    def __init__(self):
+    def __init__(self, input_shape, hidden_units, num_classes):
         """
-        Returns a three layer FullyConnectedModel.
+        Returns a FullyConnectedModel.
+        :param input_shape: The input shape: (image_width, image_height, channels)
+        :param hidden_units: The hidden units.
+        :param num_classes: The number of classes.
         """
         super(FullyConnectedModel, self).__init__()
 
         self.flatten = nn.Flatten()
 
-        self.linear_1 = nn.Linear(MNIST_DIMENSIONS, HIDDEN_LAYER_ONE_CHANNELS)
-        self.linear_2 = nn.Linear(HIDDEN_LAYER_ONE_CHANNELS, HIDDEN_LAYER_TWO_CHANNELS)
-        self.linear_3 = nn.Linear(HIDDEN_LAYER_TWO_CHANNELS, NUM_CLASSES)
+        image_width, image_height, in_channels = input_shape
+        in_features = image_width * image_height * in_channels
+
+        self.linear_1 = nn.Linear(in_features, hidden_units[0])
+        self.linear_2 = nn.Linear(hidden_units[0], hidden_units[1])
+        self.output_layer = nn.Linear(hidden_units[1], num_classes)
 
     def forward(self, x):
         """
@@ -28,12 +33,11 @@ class FullyConnectedModel(nn.Module):
         """
         x = self.flatten(x)
         x = self.linear_1(x)
-        # Pysyft doesn't work with the nn.Relu
         x = F.relu(x)
 
         x = self.linear_2(x)
         x = F.relu(x)
 
-        out = self.linear_3(x)
+        out = self.output_layer(x)
 
         return out
