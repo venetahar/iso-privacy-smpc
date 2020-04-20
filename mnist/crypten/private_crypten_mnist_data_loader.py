@@ -8,11 +8,11 @@ class PrivateCryptenMnistDataLoader(MnistDataLoader):
     A Private MNIST Data loader responsible for encrypting and sharing the data.
     """
 
-    def __init__(self, data_path):
+    def __init__(self, data_path, test_batch_size):
         """
         Creates a PrivateMnistDataLoader.
         """
-        super(PrivateCryptenMnistDataLoader, self).__init__(data_path)
+        super(PrivateCryptenMnistDataLoader, self).__init__(data_path, test_batch_size)
         self.private_test_loader = []
 
     def encrypt_test_data(self, data_owner):

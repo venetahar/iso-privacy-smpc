@@ -2,7 +2,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from torchvision import datasets
 
-from mnist.common.constants import BATCH_SIZE, TEST_BATCH_SIZE
+from mnist.common.constants import BATCH_SIZE
 
 
 class MnistDataLoader:
@@ -10,7 +10,7 @@ class MnistDataLoader:
     A simple MNIST data loader.
     """
 
-    def __init__(self, data_path):
+    def __init__(self, data_path, test_batch_size):
         """
         Creates an MnistDataLoader which has a train and a test loader.
         """
@@ -23,4 +23,4 @@ class MnistDataLoader:
         self.train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 
         self.test_set = datasets.MNIST(root=data_path, train=False, download=True, transform=self.transform)
-        self.test_loader = DataLoader(self.test_set, batch_size=TEST_BATCH_SIZE, shuffle=False, num_workers=2)
+        self.test_loader = DataLoader(self.test_set, batch_size=test_batch_size, shuffle=False, num_workers=2)

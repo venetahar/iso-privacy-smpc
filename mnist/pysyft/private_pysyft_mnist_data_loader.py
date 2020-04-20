@@ -6,11 +6,11 @@ class PrivatePySyftMnistDataLoader(MnistDataLoader):
     A Private MNIST Data loader responsible for encrypting and sharing the data.
     """
 
-    def __init__(self, data_path):
+    def __init__(self, data_path, test_batch_size):
         """
         Creates a PrivateMnistDataLoader.
         """
-        super(PrivatePySyftMnistDataLoader, self).__init__(data_path)
+        super(PrivatePySyftMnistDataLoader, self).__init__(data_path, test_batch_size)
         self.private_test_loader = []
 
     def encrypt_test_data(self, party_one, party_two, crypto_provider):

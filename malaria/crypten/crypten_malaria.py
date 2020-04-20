@@ -2,7 +2,7 @@ import torch
 
 from common.constants import CONVPOOL_MODEL_TYPE
 from common.crypten.crypten_private_inference import CryptenPrivateInference
-from common.models.model_factory import ModelFactory
+from common.model_factory import ModelFactory
 from malaria.common.constants import TEST_BATCH_SIZE
 from malaria.common.malaria_training import evaluate_plain_text
 from malaria.crypten.private_malaria_data_loader import PrivateMalariaDataLoader
