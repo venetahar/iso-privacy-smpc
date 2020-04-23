@@ -45,9 +45,9 @@ class ModelTraining:
                 self.optimizer.step()
             print('[%d] loss: %.3f' % (epoch + 1,  running_loss / len(self.data_loader.train_loader)))
 
-    def evaluate_plain_text(self):
+    def evaluate_plain_text(self, test_batch_size):
         correct_predictions = 0
-        total_predictions = len(self.data_loader.test_loader) * self.training_parameters['test_batch_size']
+        total_predictions = len(self.data_loader.test_loader) * test_batch_size
         self.model.eval()
         for index, (inputs, labels) in enumerate(self.data_loader.test_loader):
             outputs = self.model(inputs)

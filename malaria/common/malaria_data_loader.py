@@ -1,13 +1,12 @@
+import numpy as np
+from numpy.random import shuffle
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets
 from torchvision.transforms import transforms
-import numpy as np
-from numpy.random import shuffle
 
 from common.utils.data_utils import DataUtils
-from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE, TEST_BATCH_SIZE, \
-    TRAIN_PERCENTAGE
+from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE, TRAIN_PERCENTAGE
 
 
 class MalariaDataLoader:
@@ -15,7 +14,7 @@ class MalariaDataLoader:
     A data loader class for the Malaria Dataset.
     """
 
-    def __init__(self, data_path, should_load_split):
+    def __init__(self, data_path, test_batch_size, should_load_split):
         """
         Returns a data loader for the Malaria dataset.
         :param data_path: The path where the images are stored
@@ -30,7 +29,7 @@ class MalariaDataLoader:
         train_sampler, test_sampler = self.get_samplers(data, should_load_split)
 
         self.train_loader = DataLoader(data, sampler=train_sampler, batch_size=TRAIN_BATCH_SIZE)
-        self.test_loader = DataLoader(data, sampler=test_sampler, batch_size=TEST_BATCH_SIZE)
+        self.test_loader = DataLoader(data, sampler=test_sampler, batch_size=test_batch_size)
 
     def get_samplers(self, data, should_load_split):
         """

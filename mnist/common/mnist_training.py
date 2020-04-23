@@ -16,4 +16,4 @@ def train_mnist_model(model_type, model_path, data_path):
     mnist_training = ModelTraining(model, mnist_data_loader, training_parameters=TRAINING_PARAMS)
     mnist_training.train()
     mnist_training.save_model(model_path)
-    mnist_training.evaluate_plain_text()
+    mnist_training.evaluate_plain_text(TEST_BATCH_SIZE)
