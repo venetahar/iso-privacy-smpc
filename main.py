@@ -59,12 +59,12 @@ def run_malaria_experiment(should_retrain_model=False):
     run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
 
-# run_mnist_fully_connected_experiment(True)
+# run_mnist_fully_connected_experiment(True)```
 # run_mnist_conv_experiment()
 # run_malaria_experiment()
 
 # It is really best to run the benchmarks one at a time as it ensures everything from PySyft and CrypTen is torn down
 # properly. There are cases when using PySyft and then CrypTen results in errors probably due to the way they hook
 # into pytorch.
-benchmark_crypten()
-# benchmark_pysyft()
+# benchmark_crypten()
+benchmark_pysyft()

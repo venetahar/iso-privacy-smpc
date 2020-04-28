@@ -66,9 +66,14 @@ class PysyftPrivateInference(PrivateInference):
         Measures the communication costs of performing private inference.
         :param path_to_model: The path to the trained model.
         """
-        self.bob.log_msgs = True
         self.alice.log_msgs = True
+        self.bob.log_msgs = True
         self.crypto_provider.log_msgs = True
+
+        # Just in case reset the message history.
+        self.alice.msg_history = list()
+        self.bob.msg_history = list()
+        self.crypto_provider.msg_history = list()
 
         super().measure_communication_costs(path_to_model)
 
