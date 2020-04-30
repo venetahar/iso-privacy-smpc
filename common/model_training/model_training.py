@@ -1,5 +1,8 @@
 from torch import optim, save
 from torch.nn import CrossEntropyLoss
+import numpy as np
+
+from common.metrics.time_metric import TimeMetric
 
 
 class ModelTraining:
@@ -60,6 +63,19 @@ class ModelTraining:
 
         accuracy = 100.0 * correct_predictions / total_predictions
         print('Plaintext test set: Accuracy: {}/{} ({:.4f}%)'.format(correct_predictions, total_predictions, accuracy))
+
+    def measure_plaintext_runtime(self, num_runs=20):
+        self.model.eval()
+        image, _ = next(iter(self.data_loader.test_loader))
+        all_metrics = []
+        for index in range(0, num_runs):
+            time_metric = TimeMetric("Plaintext runtime")
+            time_metric.start()
+            self.model(image)
+            time_metric.stop()
+            all_metrics.append(time_metric.value)
+        print("============Performance metrics: ============ ")
+        print("Average plaintext evaluate model time: {}".format(np.mean(all_metrics)))
 
     def save_model(self, model_path):
         """

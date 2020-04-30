@@ -1,8 +1,8 @@
 from common.constants import FULLY_CONNECTED3_MODEL_TYPE, CONV_1_MODEL_TYPE
-from malaria.common.malaria_training import train_malaria_model
+from malaria.common.malaria_training import train_malaria_model, measure_malaria_plain_text_runtime
 from malaria.crypten.crypten_malaria import run_crypten_malaria_experiment, crypten_malaria_benchmark
 from malaria.pysyft.pysyft_malaria import run_pysyft_malaria_experiment, pysyft_benchmark_malaria
-from mnist.common.mnist_training import train_mnist_model
+from mnist.common.mnist_training import train_mnist_model, measure_mnist_plain_text_runtime
 from mnist.crypten.crypten_mnist import run_crypten_mnist_experiment, crypten_mnist_benchmark
 from mnist.pysyft.pysyft_mnist import run_pysyft_mnist_experiment, pysyft_benchmark_mnist
 
@@ -67,7 +67,7 @@ def run_malaria_experiment(framework, should_retrain_model=False):
 
 # run_mnist_conv_experiment('pysyft')
 # run_mnist_fully_connected_experiment('pysyft')
-run_malaria_experiment('pysyft')
+# run_malaria_experiment('pysyft')
 
 # run_mnist_conv_experiment('crypten')
 # run_mnist_fully_connected_experiment('crypten')
@@ -79,3 +79,5 @@ run_malaria_experiment('pysyft')
 
 # benchmark_crypten()
 # benchmark_pysyft()
+
+measure_malaria_plain_text_runtime(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)

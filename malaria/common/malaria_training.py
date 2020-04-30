@@ -20,6 +20,13 @@ def train_malaria_model(model_path, data_path):
     malaria_training.save_model(model_path)
 
 
+def measure_malaria_plain_text_runtime(model_path, data_path, num_runs=20):
+    mnist_data_loader = MalariaDataLoader(data_path, 1, False)
+    model = torch.load(model_path)
+    model_training = ModelTraining(model, mnist_data_loader, training_parameters=TRAINING_PARAMS)
+    model_training.measure_plaintext_runtime(num_runs)
+
+
 def evaluate_saved_model(model_path, data_loader):
     """
     Evaluates a saved models in plain text.
