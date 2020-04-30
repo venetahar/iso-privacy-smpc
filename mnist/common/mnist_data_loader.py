@@ -19,6 +19,8 @@ class MnistDataLoader:
              transforms.Normalize((0.1307,), (0.3081,))]
         )
 
+        self.test_batch_size = test_batch_size
+
         train_set = datasets.MNIST(root=data_path, train=True, download=True, transform=self.transform)
         self.train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 

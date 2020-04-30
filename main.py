@@ -38,33 +38,44 @@ def benchmark_pysyft():
     pysyft_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
 
-def run_mnist_fully_connected_experiment(should_retrain_model=False):
+def run_mnist_fully_connected_experiment(framework, should_retrain_model=False):
     if should_retrain_model:
         train_mnist_model(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
-    run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
-    run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    if framework == 'crypten':
+        run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    else:
+        run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
 
 
-def run_mnist_conv_experiment(should_retrain_model=False):
+def run_mnist_conv_experiment(framework, should_retrain_model=False):
     if should_retrain_model:
         train_mnist_model(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    if framework == 'crypten':
+        run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    else:
+        run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
 
 
-def run_malaria_experiment(should_retrain_model=False):
+def run_malaria_experiment(framework, should_retrain_model=False):
     if should_retrain_model:
         train_malaria_model(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-    run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-    run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    if framework == 'crypten':
+        run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    else:
+        run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
 
-# run_mnist_fully_connected_experiment(True)```
-# run_mnist_conv_experiment()
-# run_malaria_experiment()
+# run_mnist_conv_experiment('pysyft')
+# run_mnist_fully_connected_experiment('pysyft')
+run_malaria_experiment('pysyft')
+
+# run_mnist_conv_experiment('crypten')
+# run_mnist_fully_connected_experiment('crypten')
+# run_malaria_experiment('crypten')
 
 # It is really best to run the benchmarks one at a time as it ensures everything from PySyft and CrypTen is torn down
 # properly. There are cases when using PySyft and then CrypTen results in errors probably due to the way they hook
 # into pytorch.
+
 # benchmark_crypten()
-benchmark_pysyft()
+# benchmark_pysyft()

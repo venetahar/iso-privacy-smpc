@@ -49,13 +49,14 @@ class PysyftPrivateInference(PrivateInference):
         """
         self.private_model.eval()
         private_correct_predictions = 0
-        total_predictions = len(self.test_data_loader.private_test_loader) * self.parameters['test_batch_size']
+        total_predictions = 0
         with torch.no_grad():
             for batch_index, (data, target) in enumerate(self.test_data_loader.private_test_loader):
                 print("Performing inference for batch {}".format(batch_index))
                 output = self.private_model(data)
                 pred = output.argmax(dim=1)
                 private_correct_predictions += pred.eq(target.view_as(pred)).sum()
+                total_predictions += len(target)
 
             correct_predictions = private_correct_predictions.copy().get().float_precision().long().item()
             accuracy = 100.0 * correct_predictions / total_predictions

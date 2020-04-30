@@ -1,3 +1,5 @@
+import torch
+
 from common.model_training.model_training import ModelTraining
 from common.model_factory import ModelFactory
 from mnist.common.constants import TRAINING_PARAMS, MNIST_DIMENSIONS, NUM_CLASSES, TEST_BATCH_SIZE
@@ -16,4 +18,11 @@ def train_mnist_model(model_type, model_path, data_path):
     mnist_training = ModelTraining(model, mnist_data_loader, training_parameters=TRAINING_PARAMS)
     mnist_training.train()
     mnist_training.save_model(model_path)
-    mnist_training.evaluate_plain_text(TEST_BATCH_SIZE)
+    mnist_training.evaluate_plain_text()
+
+
+def evaluate_plain_text(model_path, data_path):
+    mnist_data_loader = MnistDataLoader(data_path, TEST_BATCH_SIZE)
+    model = torch.load(model_path)
+    malaria_training = ModelTraining(model, mnist_data_loader, training_parameters=TRAINING_PARAMS)
+    malaria_training.evaluate_plain_text()

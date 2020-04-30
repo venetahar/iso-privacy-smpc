@@ -20,4 +20,5 @@ The main.py file contains the code required to run the mnist and malaria experim
 By default it runs all mnist and malaria experiments without retraining the model. If you wish to retrain the model 
 invoke the method using should_retrain_model=True.
 
-If running from the command line ```python3 main.py``` from the root of the project. 
+If running from the command line ```python3 main.py``` from the root of the project. Different experiments can be 
+selected to run inside the main file. 

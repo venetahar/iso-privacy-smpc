@@ -20,6 +20,7 @@ class MalariaDataLoader:
         :param data_path: The path where the images are stored
         """
         self.data_path = data_path
+        self.test_batch_size = test_batch_size
         data_transforms = transforms.Compose([transforms.Resize(IMG_RESIZE),
                                               transforms.ToTensor(),
                                               transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
