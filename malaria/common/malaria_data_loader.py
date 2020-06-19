@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from numpy.random import shuffle
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -26,7 +27,8 @@ class MalariaDataLoader:
                                               transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
                                               ])
 
-        data = datasets.ImageFolder(self.data_path + 'cell_images', transform=data_transforms)
+        cell_images_path = os.path.join(self.data_path, 'cell_images')
+        data = datasets.ImageFolder(cell_images_path, transform=data_transforms)
         train_sampler, test_sampler = self.get_samplers(data, should_load_split)
 
         self.train_loader = DataLoader(data, sampler=train_sampler, batch_size=TRAIN_BATCH_SIZE)
