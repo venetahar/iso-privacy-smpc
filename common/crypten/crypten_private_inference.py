@@ -98,6 +98,7 @@ class CryptenPrivateInference(PrivateInference):
         correct_predictions = 0
         total_predictions = 0
         for batch_index, (data, target) in enumerate(self.test_data_loader.private_test_loader):
+            print('Performing inference for batch {}'.format(batch_index))
             output_enc = self.private_model(data)
             # Weirdly these produce different results so for now we have to use the decrypted values
             # correct = output_enc.argmax(dim=1).eq(self.encrypted_labels).sum()
