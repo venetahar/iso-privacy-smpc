@@ -1,3 +1,8 @@
+# THIS IS CRITICAL FOR CRYPTEN TO WORK ON CERTAIN LINUX DISTRIBUTIONS!
+# For more details see: https://github.com/facebookresearch/CrypTen/issues/88
+import torch
+torch.set_num_threads(1)
+
 from common.constants import FULLY_CONNECTED3_MODEL_TYPE, CONV_1_MODEL_TYPE
 from malaria.common.malaria_training import train_malaria_model, measure_malaria_plain_text_runtime
 from malaria.crypten.crypten_malaria import run_crypten_malaria_experiment, crypten_malaria_benchmark
@@ -69,7 +74,7 @@ def run_malaria_experiment(framework, should_retrain_model=False):
 # run_mnist_fully_connected_experiment('pysyft')
 # run_malaria_experiment('pysyft')
 
-# run_mnist_conv_experiment('crypten')
+run_mnist_conv_experiment('crypten')
 # run_mnist_fully_connected_experiment('crypten')
 # run_malaria_experiment('crypten')
 
@@ -80,4 +85,4 @@ def run_malaria_experiment(framework, should_retrain_model=False):
 # benchmark_crypten()
 # benchmark_pysyft()
 
-measure_malaria_plain_text_runtime(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+# measure_malaria_plain_text_runtime(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
