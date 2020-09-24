@@ -5,5 +5,5 @@ mnist/pysyft/data/
 eyepacs/eyepacs_models/
 .DS_Store
 eyepacs/common/image_label_dataset.py
-
+*.pyc
 
