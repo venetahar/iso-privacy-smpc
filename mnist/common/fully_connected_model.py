@@ -21,9 +21,9 @@ class FullyConnectedModel(nn.Module):
         image_width, image_height, in_channels = input_shape
         in_features = image_width * image_height * in_channels
 
-        self.linear_1 = nn.Linear(in_features, hidden_units[0], bias=False)
-        self.linear_2 = nn.Linear(hidden_units[0], hidden_units[1], bias=False)
-        self.output_layer = nn.Linear(hidden_units[1], num_classes, bias=False)
+        self.linear_1 = nn.Linear(in_features, hidden_units[0])
+        self.linear_2 = nn.Linear(hidden_units[0], hidden_units[1])
+        self.output_layer = nn.Linear(hidden_units[1], num_classes)
 
     def forward(self, x):
         """

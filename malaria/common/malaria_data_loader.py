@@ -1,13 +1,10 @@
-import numpy as np
 import os
-from numpy.random import shuffle
+
 from torch.utils.data.dataloader import DataLoader
-from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets
 from torchvision.transforms import transforms
 
-from common.utils.data_utils import DataUtils
-from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE, TRAIN_PERCENTAGE
+from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE
 
 
 class MalariaDataLoader:
@@ -15,7 +12,7 @@ class MalariaDataLoader:
     A data loader class for the Malaria Dataset.
     """
 
-    def __init__(self, data_path, test_batch_size, should_load_split):
+    def __init__(self, data_path, test_batch_size, training_folder='training', testing_folder='testing'):
         """
         Returns a data loader for the Malaria dataset.
         :param data_path: The path where the images are stored
@@ -27,39 +24,11 @@ class MalariaDataLoader:
                                               transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
                                               ])
 
-        cell_images_path = os.path.join(self.data_path, 'cell_images')
-        data = datasets.ImageFolder(cell_images_path, transform=data_transforms)
-        train_sampler, test_sampler = self.get_samplers(data, should_load_split)
+        training_cell_images_path = os.path.join(self.data_path, 'cell_images', training_folder)
+        training_data = datasets.ImageFolder(training_cell_images_path, transform=data_transforms)
+        self.train_loader = DataLoader(training_data, batch_size=TRAIN_BATCH_SIZE, shuffle=True, num_workers=2)
 
-        self.train_loader = DataLoader(data, sampler=train_sampler, batch_size=TRAIN_BATCH_SIZE)
-        self.test_loader = DataLoader(data, sampler=test_sampler, batch_size=test_batch_size)
+        testing_cell_images_path = os.path.join(self.data_path, 'cell_images', testing_folder)
+        testing_data = datasets.ImageFolder(testing_cell_images_path, transform=data_transforms)
+        self.test_loader = DataLoader(testing_data, batch_size=test_batch_size, shuffle=True, num_workers=2)
 
-    def get_samplers(self, data, should_load_split):
-        """
-        Returns train and test samplers.
-        :param data: All available data.
-        :param should_load_split: Whether it should load a preexisting data split.
-        :return: The train and test samplers based on the data.
-        """
-        if should_load_split:
-            train_indices, test_indices = DataUtils.load_indices(self.data_path)
-        else:
-            train_indices, test_indices = MalariaDataLoader.generate_train_test_split(self, data)
-        train_sampler = SubsetRandomSampler(train_indices)
-        test_sampler = SubsetRandomSampler(test_indices)
-
-        return train_sampler, test_sampler
-
-    def generate_train_test_split(self, data):
-        """
-        Generates train and test splits and saves them to csv files for future use.
-        :param data: The data to split.
-        :return: train and test indices for the split.
-        """
-        num_samples = len(data)
-        indices = list(range(num_samples))
-        num_train_samples = int(np.floor(TRAIN_PERCENTAGE * num_samples))
-        shuffle(indices)
-        train_indices, test_indices = indices[:num_train_samples], indices[num_train_samples:]
-        DataUtils.save_indices(train_indices, test_indices, self.data_path)
-        return train_indices, test_indices

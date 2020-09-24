@@ -11,7 +11,7 @@ def train_malaria_model(model_path, data_path):
     :param model_path: The model path.
     :param data_path: The data path.
     """
-    data_loader = MalariaDataLoader(data_path, TEST_BATCH_SIZE, should_load_split=False)
+    data_loader = MalariaDataLoader(data_path, TEST_BATCH_SIZE)
     model = ConvPoolModel(input_shape=(32, 32, 3), num_classes=2, conv_kernel_sizes=[5, 5], channels=[36, 36],
                           avg_pool_sizes=[2, 2], fc_units=[72])
     malaria_training = ModelTraining(model, data_loader, training_parameters=TRAINING_PARAMS)
@@ -21,7 +21,7 @@ def train_malaria_model(model_path, data_path):
 
 
 def measure_malaria_plain_text_runtime(model_path, data_path, num_runs=20):
-    mnist_data_loader = MalariaDataLoader(data_path, 1, False)
+    mnist_data_loader = MalariaDataLoader(data_path, 1)
     model = torch.load(model_path)
     model_training = ModelTraining(model, mnist_data_loader, training_parameters=TRAINING_PARAMS)
     model_training.measure_plaintext_runtime(num_runs)
