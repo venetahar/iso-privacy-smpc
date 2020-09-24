@@ -64,3 +64,11 @@ class ConvModel(nn.Module):
         height_out = int(height_out / avg_pool_size)
 
         return width_out * height_out * output_channels
+
+    def reset_parameters(self):
+        """
+        Initialize the model parameters.
+        """
+        for param in self.parameters():
+            if param.requires_grad and param.dim() > 1:
+                nn.init.xavier_uniform_(param)

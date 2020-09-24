@@ -21,9 +21,9 @@ class FullyConnectedModel(nn.Module):
         image_width, image_height, in_channels = input_shape
         in_features = image_width * image_height * in_channels
 
-        self.linear_1 = nn.Linear(in_features, hidden_units[0])
-        self.linear_2 = nn.Linear(hidden_units[0], hidden_units[1])
-        self.output_layer = nn.Linear(hidden_units[1], num_classes)
+        self.linear_1 = nn.Linear(in_features, hidden_units[0], bias=False)
+        self.linear_2 = nn.Linear(hidden_units[0], hidden_units[1], bias=False)
+        self.output_layer = nn.Linear(hidden_units[1], num_classes, bias=False)
 
     def forward(self, x):
         """
@@ -41,3 +41,11 @@ class FullyConnectedModel(nn.Module):
         out = self.output_layer(x)
 
         return out
+
+    def reset_parameters(self):
+        """
+        Initialize the model parameters.
+        """
+        for param in self.parameters():
+            if param.requires_grad and param.dim() > 1:
+                nn.init.xavier_uniform_(param)

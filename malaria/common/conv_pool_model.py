@@ -55,3 +55,11 @@ class ConvPoolModel(nn.Module):
         out = self.linear_2(x)
 
         return out
+
+    def reset_parameters(self):
+        """
+        Initialize the model parameters.
+        """
+        for param in self.parameters():
+            if param.requires_grad and param.dim() > 1:
+                nn.init.xavier_uniform_(param)

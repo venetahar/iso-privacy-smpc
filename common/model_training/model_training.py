@@ -22,7 +22,7 @@ class ModelTraining:
         self.training_parameters = training_parameters
         self.criterion = criterion
         if self.training_parameters['optim'] == 'Adam':
-            self.optimizer = optim.Adam(self.model.parameters(), lr=self.training_parameters['learning_rate'])
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.training_parameters['learning_rate'], eps=1e-7)
             print("Using Adam")
         else:
             self.optimizer = optim.SGD(self.model.parameters(),
@@ -33,6 +33,7 @@ class ModelTraining:
         """
         Trains a model and prints the loss.
         """
+        self.model.reset_parameters()
         for epoch in range(self.training_parameters['num_epochs']):
             running_loss = 0.0
             for index, data in enumerate(self.data_loader.train_loader):
