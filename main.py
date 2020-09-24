@@ -1,7 +1,14 @@
 # THIS IS CRITICAL FOR CRYPTEN TO WORK ON CERTAIN LINUX DISTRIBUTIONS!
 # For more details see: https://github.com/facebookresearch/CrypTen/issues/88
+import argparse
+
 import torch
 torch.set_num_threads(1)
+
+from numpy.random import seed
+seed(0)
+
+torch.manual_seed(0)
 
 from common.constants import FULLY_CONNECTED3_MODEL_TYPE, CONV_1_MODEL_TYPE
 from malaria.common.malaria_training import train_malaria_model, measure_malaria_plain_text_runtime
@@ -19,70 +26,82 @@ MALARIA_DATA_PATH = 'malaria/data/'
 MALARIA_CONVNET_MODEL_PATH = 'malaria/models/alice_convpool_model.pth'
 
 
-def benchmark_crypten():
-    print("====================================================================================")
-    print("Benchmarking CrypTen on the MNIST dataset using the Fully Connected model.")
-    crypten_mnist_benchmark(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
-    print("====================================================================================")
-    print("Benchmarking CrypTen on the MNIST dataset using the Convolutional model.")
-    crypten_mnist_benchmark(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    print("====================================================================================")
-    print("Benchmarking CrypTen on the Malaria dataset using the Convolutional model.")
-    crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-
-
-def benchmark_pysyft():
-    print("====================================================================================")
-    print("Benchmarking PySyft on the MNIST dataset using the Fully Connected model.")
-    pysyft_benchmark_mnist(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
-    print("====================================================================================")
-    print("Benchmarking PySyft on the MNIST dataset using the Convolutional model.")
-    pysyft_benchmark_mnist(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    print("====================================================================================")
-    print("Benchmarking PySyft on the Malaria dataset using the Convolutional model.")
-    pysyft_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-
-
-def run_mnist_fully_connected_experiment(framework, should_retrain_model=False):
+def run_mnist_fully_connected_experiment(framework, should_retrain_model=False, should_benchmark=False):
     if should_retrain_model:
         train_mnist_model(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
-        run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking CrypTen on the MNIST dataset using the Fully Connected model.")
+            crypten_mnist_benchmark(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+        else:
+            run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
     else:
-        run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking PySyft on the MNIST dataset using the Fully Connected model.")
+            pysyft_benchmark_mnist(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+        else:
+            run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
 
 
-def run_mnist_conv_experiment(framework, should_retrain_model=False):
+def run_mnist_conv_experiment(framework, should_retrain_model=False, should_benchmark=False):
     if should_retrain_model:
         train_mnist_model(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
-        run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking CrypTen on the Malaria dataset using the Convolutional model.")
+            crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        else:
+            run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     else:
-        run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking PySyft on the MNIST dataset using the Convolutional model.")
+            pysyft_benchmark_mnist(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+        else:
+            run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
 
 
-def run_malaria_experiment(framework, should_retrain_model=False):
+def run_malaria_experiment(framework, should_retrain_model=False, should_benchmark=False):
     if should_retrain_model:
         train_malaria_model(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     if framework == 'crypten':
-        run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking CrypTen on the Malaria dataset using the Convolutional model.")
+            crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        else:
+            run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     else:
-        run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking PySyft on the Malaria dataset using the Convolutional model.")
+            pysyft_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        else:
+            run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
 
-# run_mnist_conv_experiment('pysyft')
-# run_mnist_fully_connected_experiment('pysyft')
-# run_malaria_experiment('pysyft')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--experiment_name', type=str, default='',
+                        help='The experiment name. Can be either: mnist_fc, mnist_conv or malaria_conv')
+    parser.add_argument('--framework', type=str, default='',
+                        help='The framework name. Can be either: pysyft or crypten')
+    parser.add_argument('--benchmark', default=False, action="store_true",
+                        help='Whether to benchmark the experiment. Default False.')
+    parser.add_argument('--retrain', default=False, action="store_true",
+                        help='Whether to retrain the model. Default False.')
+    parser.add_argument('--pysyft_protocol', type=str, default='snn',
+                        help='pysyft protocol. Can be either: snn or fss. Default: snn.')
+    config = parser.parse_args()
 
-run_mnist_conv_experiment('crypten')
-# run_mnist_fully_connected_experiment('crypten')
-# run_malaria_experiment('crypten')
-
-# It is really best to run the benchmarks one at a time as it ensures everything from PySyft and CrypTen is torn down
-# properly. There are cases when using PySyft and then CrypTen results in errors probably due to the way they hook
-# into pytorch.
-
-# benchmark_crypten()
-# benchmark_pysyft()
-
-# measure_malaria_plain_text_runtime(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    if config.experiment_name == 'mnist_fc':
+        run_mnist_fully_connected_experiment(config.framework, config.retrain, config.benchmark)
+    elif config.experiment_name == 'mnist_conv':
+        run_mnist_conv_experiment(config.framework, config.retrain, config.benchmark)
+    elif config.experiment_name == 'malaria_conv':
+        run_malaria_experiment(config.framework, config.retrain, config.benchmark)
+    else:
+        print("Please supply a valid experiment type. Can be either: mnist_fc, mnist_conv or malaria_conv ")
