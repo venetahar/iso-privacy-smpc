@@ -18,7 +18,7 @@ The repository contains experiments on the MNIST dataset and the Malaria dataset
 
 The main.py file contains the code required to run the mnist and malaria experiments using both PySyft and CrypTen. 
 By default it runs all mnist and malaria experiments without retraining the model. If you wish to retrain the model 
-invoke the method using should_retrain_model=True.
+pass --retrain flag.
 
-If running from the command line ```python3 main.py``` from the root of the project. Different experiments can be 
-selected to run inside the main file. 
+I.e. ```python3 main.py --experiment_name=mnist_conv --framework=pysyft --retrain``` from the root of the project. 
+Different experiments can be selected to by passing the relevant experiment_name.
