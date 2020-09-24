@@ -1,3 +1,6 @@
+import random
+import string
+
 import syft as sy
 import torch
 
@@ -9,7 +12,7 @@ class PysyftPrivateInference(PrivateInference):
     Class encapsulating the logic for performing private inference using PySyft.
     """
 
-    def __init__(self, test_data_loader, parameters=None):
+    def __init__(self, test_data_loader, parameters=None, protocol='snn'):
         """
         Returns a PysyftPrivateInference object.
         :param test_data_loader: The data loader.
@@ -17,9 +20,16 @@ class PysyftPrivateInference(PrivateInference):
         """
         super(PysyftPrivateInference, self).__init__(test_data_loader, parameters)
         hook = sy.TorchHook(torch)
-        self.bob = sy.VirtualWorker(hook, id="bob")
-        self.alice = sy.VirtualWorker(hook, id="alice")
-        self.crypto_provider = sy.VirtualWorker(hook, id="crypto_provider")
+        self.bob = sy.VirtualWorker(hook, id="bob_" + self._get_random_string())
+        self.alice = sy.VirtualWorker(hook, id="alice_" + self._get_random_string())
+        self.crypto_provider = sy.VirtualWorker(hook, id="crypto_provider_" + self._get_random_string())
+        self.protocol = protocol
+        print("Starting PySyft with protocol " + protocol)
+
+    @staticmethod
+    def _get_random_string(length=7):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for i in range(length))
 
     def encrypt_data(self):
         """
@@ -33,7 +43,8 @@ class PysyftPrivateInference(PrivateInference):
         :param data_instance: The data instance.
         :return: An encrypted version of the data.
         """
-        return data_instance.fix_prec().share(self.alice, self.bob, crypto_provider=self.crypto_provider)
+        return data_instance.fix_prec().share(self.alice, self.bob,
+                                              crypto_provider=self.crypto_provider, protocol=self.protocol)
 
     def encrypt_model(self, path_to_model):
         """
@@ -41,7 +52,8 @@ class PysyftPrivateInference(PrivateInference):
         :param path_to_model: The path to the saved model to be loaded and secret shared.
         """
         self.private_model = torch.load(path_to_model)
-        self.private_model.fix_precision().share(self.alice, self.bob, crypto_provider=self.crypto_provider)
+        self.private_model.fix_precision().share(self.alice, self.bob,
+                                                 crypto_provider=self.crypto_provider, protocol=self.protocol)
 
     def evaluate(self):
         """
@@ -67,14 +79,12 @@ class PysyftPrivateInference(PrivateInference):
         Measures the communication costs of performing private inference.
         :param path_to_model: The path to the trained model.
         """
-        self.alice.log_msgs = True
-        self.bob.log_msgs = True
-        self.crypto_provider.log_msgs = True
-
-        # Just in case reset the message history.
-        self.alice.msg_history = list()
-        self.bob.msg_history = list()
-        self.crypto_provider.msg_history = list()
+        self.alice.count = True
+        self.bob.count = True
+        self.crypto_provider.count = True
+        self.alice.received_load = 0
+        self.bob.received_load = 0
+        self.crypto_provider.received_load = 0
 
         super().measure_communication_costs(path_to_model)
 
@@ -90,13 +100,8 @@ class PysyftPrivateInference(PrivateInference):
     @staticmethod
     def _count_bytes(worker):
         """
-        Counts the number of bytes. As messages in PySyft seem to be bytes objects we can use the length to determine
-        the number of bytes per message:
-        https://en.wikiversity.org/wiki/Python_Concepts/Bytes_objects_and_Bytearrays#bytes_objects
+        Counts the number of bytes.
         :param worker: The worker.
         :return: The total bytes for this worker.
         """
-        total_bytes = 0
-        for msg in worker.msg_history:
-            total_bytes += len(msg)
-        return total_bytes
+        return worker.received_load

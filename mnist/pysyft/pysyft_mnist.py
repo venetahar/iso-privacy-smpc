@@ -4,16 +4,20 @@ from mnist.common.mnist_training import evaluate_plain_text
 from mnist.pysyft.private_pysyft_mnist_data_loader import PrivatePySyftMnistDataLoader
 
 
-def run_pysyft_mnist_experiment(model_path, data_path):
+def run_pysyft_mnist_experiment(model_path, data_path, protocol='snn'):
     evaluate_plain_text(model_path, data_path)
-    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, TEST_BATCH_SIZE))
+    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, TEST_BATCH_SIZE,
+                                                                            protocol=protocol),
+                                               protocol=protocol)
     private_inference.perform_inference(model_path)
 
 
-def pysyft_benchmark_mnist(model_path, data_path):
-    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, 1))
+def pysyft_benchmark_mnist(model_path, data_path, protocol='snn'):
+    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, 1, protocol=protocol),
+                                               protocol=protocol)
     private_inference.measure_communication_costs(model_path)
 
     # Best to create a new object as extra logging is enabled which could introduce slowdowns
-    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, 1))
+    private_inference = PysyftPrivateInference(PrivatePySyftMnistDataLoader(data_path, 1, protocol=protocol),
+                                               protocol=protocol)
     private_inference.measure_runtime(model_path)

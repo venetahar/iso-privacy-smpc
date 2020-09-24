@@ -27,31 +27,31 @@ MALARIA_DATA_PATH = 'malaria/data/'
 MALARIA_CONVNET_MODEL_PATH = 'malaria/models/alice_convpool_model.pth'
 
 
-def run_mnist_fully_connected_experiment(framework, should_retrain_model=False):
+def run_mnist_fully_connected_experiment(framework, should_retrain_model=False, protocol='snn'):
     if should_retrain_model:
         train_mnist_model(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
         run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
     else:
-        run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+        run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH, protocol=protocol)
 
 
-def run_mnist_conv_experiment(framework, should_retrain_model=False):
+def run_mnist_conv_experiment(framework, should_retrain_model=False, protocol='snn'):
     if should_retrain_model:
         train_mnist_model(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
         run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     else:
-        run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+        run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH, protocol=protocol)
 
 
-def run_malaria_experiment(framework, should_retrain_model=False):
+def run_malaria_experiment(framework, should_retrain_model=False, protocol='snn'):
     if should_retrain_model:
         train_malaria_model(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     if framework == 'crypten':
         run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     else:
-        run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH, protocol=protocol)
 
 
 if __name__ == "__main__":
@@ -62,13 +62,15 @@ if __name__ == "__main__":
                         help='The framework name. Can be either: pysyft or crypten')
     parser.add_argument('--retrain', default=False, action="store_true",
                         help='Whether to retrain the model. Default False.')
+    parser.add_argument('--pysyft_protocol', type=str, default='snn',
+                        help='pysyft protocol. Can be either: snn or fss. Default: snn.')
     config = parser.parse_args()
 
     if config.experiment_name == 'mnist_fc':
-        run_mnist_fully_connected_experiment(config.framework, config.retrain)
+        run_mnist_fully_connected_experiment(config.framework, config.retrain, config.pysyft_protocol)
     elif config.experiment_name == 'mnist_conv':
-        run_mnist_conv_experiment(config.framework, config.retrain)
+        run_mnist_conv_experiment(config.framework, config.retrain, config.pysyft_protocol)
     elif config.experiment_name == 'malaria_conv':
-        run_malaria_experiment(config.framework, config.retrain)
+        run_malaria_experiment(config.framework, config.retrain, config.pysyft_protocol)
     else:
         print("Please supply a valid experiment type. Can be either: mnist_fc, mnist_conv or malaria_conv ")

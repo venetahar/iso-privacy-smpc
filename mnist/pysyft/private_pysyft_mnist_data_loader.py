@@ -6,12 +6,13 @@ class PrivatePySyftMnistDataLoader(MnistDataLoader):
     A Private MNIST Data loader responsible for encrypting and sharing the data.
     """
 
-    def __init__(self, data_path, test_batch_size):
+    def __init__(self, data_path, test_batch_size, protocol='snn'):
         """
         Creates a PrivateMnistDataLoader.
         """
         super(PrivatePySyftMnistDataLoader, self).__init__(data_path, test_batch_size)
         self.private_test_loader = []
+        self.protocol = protocol
 
     def encrypt_test_data(self, party_one, party_two, crypto_provider):
         """
@@ -22,6 +23,6 @@ class PrivatePySyftMnistDataLoader(MnistDataLoader):
         """
         for data, labels in self.test_loader:
             self.private_test_loader.append((
-                data.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider),
-                labels.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider)
+                data.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider, protocol=self.protocol),
+                labels.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider, protocol=self.protocol)
             ))

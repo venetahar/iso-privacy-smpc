@@ -6,13 +6,14 @@ class PrivateMalariaDataLoader(MalariaDataLoader):
     A private malaria data loader responsible for sharing the data with the respective parties.
     """
 
-    def __init__(self, data_path, test_batch_size):
+    def __init__(self, data_path, test_batch_size, protocol='snn'):
         """
         Creates a PrivateMalariaDataLoader.
         :param data_path: The data path where the files are located.
         """
         super(PrivateMalariaDataLoader, self).__init__(data_path, test_batch_size)
         self.private_test_loader = []
+        self.protocol = protocol
 
     def encrypt_test_data(self, party_one, party_two, crypto_provider):
         """
@@ -23,6 +24,6 @@ class PrivateMalariaDataLoader(MalariaDataLoader):
         """
         for data, labels in self.test_loader:
             self.private_test_loader.append((
-                data.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider),
-                labels.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider)
+                data.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider, protocol=self.protocol),
+                labels.fix_prec().share(party_one, party_two, crypto_provider=crypto_provider, protocol=self.protocol)
             ))
