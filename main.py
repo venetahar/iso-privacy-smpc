@@ -61,8 +61,8 @@ def run_mnist_conv_experiment(framework, should_retrain_model=False, should_benc
     if framework == 'crypten':
         if should_benchmark:
             print("====================================================================================")
-            print("Benchmarking CrypTen on the Malaria dataset using the Convolutional model.")
-            crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+            print("Benchmarking CrypTen on the MNIST dataset using the Convolutional model.")
+            crypten_mnist_benchmark(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
         else:
             run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     elif framework == 'pysyft':
