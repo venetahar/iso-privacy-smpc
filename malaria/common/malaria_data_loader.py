@@ -7,6 +7,15 @@ from torchvision.transforms import transforms
 from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE
 
 
+def malaria_transform():
+    return transforms.Compose([
+        transforms.Resize(IMG_RESIZE),
+        transforms.ToTensor(),
+        transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
+    ])
+
+
+
 class MalariaDataLoader:
     """
     A data loader class for the Malaria Dataset.
@@ -19,10 +28,7 @@ class MalariaDataLoader:
         """
         self.data_path = data_path
         self.test_batch_size = test_batch_size
-        data_transforms = transforms.Compose([transforms.Resize(IMG_RESIZE),
-                                              transforms.ToTensor(),
-                                              transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
-                                              ])
+        data_transforms = malaria_transform()
 
         training_cell_images_path = os.path.join(self.data_path, 'cell_images', training_folder)
         training_data = datasets.ImageFolder(training_cell_images_path, transform=data_transforms)

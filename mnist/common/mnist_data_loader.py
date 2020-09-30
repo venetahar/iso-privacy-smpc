@@ -5,6 +5,14 @@ from torchvision import datasets
 from mnist.common.constants import BATCH_SIZE
 
 
+def mnist_transform():
+    return transforms.Compose(
+        [transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))]
+    )
+
+
+
 class MnistDataLoader:
     """
     A simple MNIST data loader.
@@ -14,10 +22,7 @@ class MnistDataLoader:
         """
         Creates an MnistDataLoader which has a train and a test loader.
         """
-        self.transform = transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.1307,), (0.3081,))]
-        )
+        self.transform = mnist_transform()
 
         self.test_batch_size = test_batch_size
 
