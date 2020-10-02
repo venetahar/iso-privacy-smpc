@@ -14,16 +14,11 @@ from mnist.common.fully_connected_model import FullyConnectedModel
 from malaria.common.malaria_data_loader import malaria_transform
 from mnist.common.mnist_data_loader import mnist_transform
 from common.utils.pytorch_utils import *
+from common.constants import MODELS
 
 app = Flask(__name__)
 
 WORKDIR = 'rest/workdir'
-
-models = {
-    "mnist_conv_model": "mnist/models/alice_conv1_model.pth",
-    "mnist_fc_model": "mnist/models/alice_fc3_model.pth",
-    "malaria_conv_model": "malaria/models/alice_convpool_model.pth"
-}
 
 transforms = {
     "mnist": mnist_transform,
@@ -43,7 +38,7 @@ def extract_model_key():
         print('No model part in request!')
         abort(500)
 
-    if model_key not in models:
+    if model_key not in MODELS:
         print('Unknown model requested!')
         abort(500)
     return model_key
@@ -61,7 +56,7 @@ def load_new_model(model_key):
     global model, selected_model
 
     if selected_model != model_key:
-        model_filename = models[model_key]
+        model_filename = MODELS[model_key]
         model = load_model(model_filename)
         selected_model = model_key
     return model, selected_model
@@ -146,7 +141,7 @@ def predict_batch():
 
 # Place server initialisation code here
 selected_model = "mnist_fc_model"
-model = load_model(models[selected_model])
+model = load_model(MODELS[selected_model])
 
 
 if __name__ == '__main__':

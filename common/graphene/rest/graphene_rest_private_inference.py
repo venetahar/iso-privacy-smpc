@@ -14,12 +14,14 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
         """
         super(GrapheneRESTClientPrivateInference, self).__init__(test_data_loader, parameters)
         self.service_url = f"{service_url}/api/predict_batch"
+        self.model = "mnist_fc_model"
 
     def perform_inference(self, path_to_model):
         """
         Performs private inference and prints the final accuracy.
-        :param path_to_model: The path to the saved model.
+        :param path_to_model: The type of model to predict from
         """
+        self.model = path_to_model
         self.evaluate()
 
     def evaluate(self):
@@ -33,7 +35,7 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
 
                 data_field = {
                     "batch": torch2json(data),
-                    "model": "mnist_fc_model"
+                    "model": self.model
                 }
                 output_response = requests.post(self.service_url, data=data_field)
 
