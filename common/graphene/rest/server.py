@@ -47,7 +47,11 @@ def extract_model_key():
 def load_model(model_filename):
     from common.utils.sys_utils import cd
 
-    with cd(WORKDIR):
+    from os.path import dirname, abspath, join
+    d = dirname(dirname(abspath(__file__)))
+    actual_workdir = join(d, WORKDIR)
+
+    with cd(actual_workdir):
         return torch.load(model_filename)
 
 
