@@ -15,19 +15,30 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
         super(GrapheneRESTClientPrivateInference, self).__init__(test_data_loader, parameters)
         self.service_url = f"{service_url}/api/predict_batch"
         self.model = "mnist_fc_model"
+        # hack to accommodate benchmarking framework's API :)
         self.private_model = self.predict
 
-    # hack to accommodate benchmarking framework's API :)
-    def predict(self, dummy_model):
-        return self.evaluate()
+    def predict(self, input_data):
+        data_field = {
+            "batch": input_data,
+            "model": self.model
+        }
+        output_response = requests.post(self.service_url, data=data_field)
 
-    def perform_inference(self, path_to_model):
+        pred = json2torch(output_response.text)
+        return pred
+
+    def encrypt_data(self):
         """
-        Performs private inference and prints the final accuracy.
-        :param path_to_model: The type of model to predict from
+        Encodes the data.
         """
+        self.test_data_loader.encode_test_data()
+
+    def encrypt_single_instance(self, data_instance):
+        return torch2json(data_instance)
+
+    def encrypt_model(self, path_to_model):
         self.model = path_to_model
-        self.evaluate()
 
     def evaluate(self):
         import torch
@@ -35,16 +46,10 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
         private_correct_predictions = 0
         total_predictions = 0
         with torch.no_grad():
-            for batch_index, (data, target) in enumerate(self.test_data_loader.test_loader):
+            for batch_index, (data, target) in enumerate(self.test_data_loader.private_test_loader):
                 print("Performing inference for batch {}".format(batch_index))
 
-                data_field = {
-                    "batch": torch2json(data),
-                    "model": self.model
-                }
-                output_response = requests.post(self.service_url, data=data_field)
-
-                pred = json2torch(output_response.text)
+                pred = self.predict(data)
                 # done upstream on server to avoid disclosing prediction values
                 # pred = output.argmax(dim=1)
 
