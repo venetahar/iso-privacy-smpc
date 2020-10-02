@@ -13,6 +13,7 @@ from mnist.common.fully_connected_model import FullyConnectedModel
 # preprocess input images
 from malaria.common.malaria_data_loader import malaria_transform
 from mnist.common.mnist_data_loader import mnist_transform
+from common.utils.pytorch_utils import *
 
 app = Flask(__name__)
 
@@ -33,6 +34,19 @@ transforms = {
 def save_file_received(file_obj):
     filename = secure_filename(file_obj.filename)
     file_obj.save(filename)
+
+
+def extract_model_key():
+    if 'model' in request.form:
+        model_key = request.form["model"]
+    else:
+        print('No model part in request!')
+        abort(500)
+
+    if model_key not in models:
+        print('Unknown model requested!')
+        abort(500)
+    return model_key
 
 
 def load_model(model_filename):
@@ -69,14 +83,21 @@ def test(in_model, data):
     in_model.eval()
     with torch.no_grad():
         outputs = in_model(data)
-        _, y_hat = outputs.max(1)
-        prediction = y_hat.item()
+        prediction = outputs.argmax(dim=1)
 
         return prediction
 
 
+def run_inference(input_data, model_key):
+    global model, selected_model
+
+    model, selected_model = load_new_model(model_key)
+    prediction = test(model, input_data)
+    return prediction
+
+
 @app.route('/api/predict', methods=['POST'])
-def predict():
+def predict_single():
     global model, selected_model
 
     # handle input data file
@@ -92,23 +113,31 @@ def predict():
     save_file_received(file_obj=file)
 
     # handle model selection parameter
-    if 'model' not in request.form:
-        print('No model part in request!')
-        abort(500)
-    model_key = request.form["model"]
+    model_key = extract_model_key()
 
-    if model_key not in models:
-        print('Unknown model requested!')
-        abort(500)
-
-    # perform prediction
     model_type = model_key.split('_')[0]
     input_image = load_image(file, model_type)
 
-    model, selected_model = load_new_model(model_key)
-    prediction = test(model, input_image)
+    prediction = run_inference(input_image, model_key)
 
-    response = Response(response=json.dumps(prediction),
+    response = Response(response=json.dumps(torch2json(prediction)),
+                        status=200,
+                        mimetype='application/json')
+
+    return response
+
+
+@app.route('/api/predict_batch', methods=['POST'])
+def predict_batch():
+
+    input_batch_json = request.form["batch"]
+    input_batch = json2torch(input_batch_json)
+
+    model_key = extract_model_key()
+
+    prediction = run_inference(input_batch, model_key)
+
+    response = Response(response=torch2json(prediction),
                         status=200,
                         mimetype='application/json')
 
