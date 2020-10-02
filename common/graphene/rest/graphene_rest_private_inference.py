@@ -15,6 +15,11 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
         super(GrapheneRESTClientPrivateInference, self).__init__(test_data_loader, parameters)
         self.service_url = f"{service_url}/api/predict_batch"
         self.model = "mnist_fc_model"
+        self.private_model = self.predict
+
+    # hack to accommodate benchmarking framework's API :)
+    def predict(self, dummy_model):
+        return self.evaluate()
 
     def perform_inference(self, path_to_model):
         """
