@@ -22,5 +22,5 @@ def graphene_rest_benchmark_mnist(model_path, data_path):
     # private_inference.measure_communication_costs(model_path)
 
     # Best to create a new object as extra logging is enabled which could introduce slowdowns
-    private_inference = GrapheneRESTClientPrivateInference("http://127.0.0.1:5000", MnistDataLoader(data_path, 1))
-    private_inference.measure_runtime(model_type)
+    private_inference = GrapheneRESTClientPrivateInference("http://127.0.0.1:5000", data_loader)
+    private_inference.measure_runtime(model_type, num_runs=2)
