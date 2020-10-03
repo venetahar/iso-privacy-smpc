@@ -18,6 +18,7 @@ from mnist.common.mnist_training import train_mnist_model, measure_mnist_plain_t
 from mnist.crypten.crypten_mnist import run_crypten_mnist_experiment, crypten_mnist_benchmark
 from mnist.pysyft.pysyft_mnist import run_pysyft_mnist_experiment, pysyft_benchmark_mnist
 from mnist.graphene.graphene_mnist import run_graphene_rest_mnist_experiment, graphene_rest_benchmark_mnist
+from malaria.graphene.graphene_malaria import run_graphene_rest_malaria_experiment, graphene_rest_benchmark_malaria
 
 MNIST_FC_MODEL_PATH = 'mnist/models/alice_fc3_model.pth'
 MNIST_CONVNET_MODEL_PATH = 'mnist/models/alice_conv1_model.pth'
@@ -104,9 +105,9 @@ def run_malaria_experiment(framework, should_retrain_model=False, should_benchma
         if should_benchmark:
             print("====================================================================================")
             print("Benchmarking Graphene on the Malaria dataset using the Convolutional model.")
-            graphene_rest_benchmark_mnist(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+            graphene_rest_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
         else:
-            run_graphene_rest_mnist_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+            run_graphene_rest_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     else:
         print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
