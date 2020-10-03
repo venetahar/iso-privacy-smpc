@@ -65,13 +65,22 @@ def run_mnist_conv_experiment(framework, should_retrain_model=False, should_benc
             crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
         else:
             run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    else:
+    elif framework == 'pysyft':
         if should_benchmark:
             print("====================================================================================")
             print("Benchmarking PySyft on the MNIST dataset using the Convolutional model.")
             pysyft_benchmark_mnist(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
         else:
             run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    elif framework == 'graphene':
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking Graphene on the MNIST dataset using the Convolutional model.")
+            graphene_rest_benchmark_mnist(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+        else:
+            run_graphene_rest_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    else:
+        print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
 
 def run_malaria_experiment(framework, should_retrain_model=False, should_benchmark=False):
@@ -84,13 +93,22 @@ def run_malaria_experiment(framework, should_retrain_model=False, should_benchma
             crypten_malaria_benchmark(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
         else:
             run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-    else:
+    elif framework == 'pysyft':
         if should_benchmark:
             print("====================================================================================")
             print("Benchmarking PySyft on the Malaria dataset using the Convolutional model.")
             pysyft_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
         else:
             run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    elif framework == 'graphene':
+        if should_benchmark:
+            print("====================================================================================")
+            print("Benchmarking Graphene on the Malaria dataset using the Convolutional model.")
+            graphene_rest_benchmark_mnist(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+        else:
+            run_graphene_rest_mnist_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    else:
+        print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
 
 if __name__ == "__main__":
