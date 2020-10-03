@@ -1,6 +1,6 @@
 from common.graphene.rest.graphene_rest_private_inference import GrapheneRESTClientPrivateInference
-from mnist.common.constants import TEST_BATCH_SIZE
-from mnist.common.mnist_training import evaluate_plain_text
+from malaria.common.constants import TEST_BATCH_SIZE
+from malaria.common.malaria_training import evaluate_saved_model
 from common.utils.python_utils import get_model_type
 from common.constants import MODELS
 from malaria.graphene.json_graphene_rest_malaria_data_loader import JSONGrapheneRESTMalariaDataLoader
@@ -11,7 +11,7 @@ def run_graphene_rest_malaria_experiment(model_path, data_path):
     data_loader = JSONGrapheneRESTMalariaDataLoader(data_path, TEST_BATCH_SIZE)
 
     model_type = get_model_type(model_path, MODELS)
-    evaluate_plain_text(model_path, data_path)
+    evaluate_saved_model(model_path, data_loader)
     private_inference = GrapheneRESTClientPrivateInference("http://127.0.0.1:5000", data_loader)
     private_inference.perform_inference(model_type)
 
