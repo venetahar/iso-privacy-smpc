@@ -1,4 +1,4 @@
-from common.utils.pytorch_utils import torch2json
+from common.utils.pytorch_utils import json_data_loader
 from mnist.common.mnist_data_loader import MnistDataLoader
 
 
@@ -18,8 +18,4 @@ class JSONGrapheneRESTMnistDataLoader(MnistDataLoader):
         """
         Encodes the test data as JSON.
         """
-        for data, labels in self.test_loader:
-            self.private_test_loader.append((
-                torch2json(data),
-                labels
-            ))
+        self.private_test_loader = json_data_loader(self.test_loader)
