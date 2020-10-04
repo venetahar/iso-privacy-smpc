@@ -16,9 +16,11 @@ from common.constants import FULLY_CONNECTED3_MODEL_TYPE, CONV_1_MODEL_TYPE
 from malaria.common.malaria_training import train_malaria_model
 from malaria.crypten.crypten_malaria import run_crypten_malaria_experiment
 from malaria.pysyft.pysyft_malaria import run_pysyft_malaria_experiment
+from malaria.graphene.graphene_malaria import run_graphene_rest_malaria_experiment
 from mnist.common.mnist_training import train_mnist_model
 from mnist.crypten.crypten_mnist import run_crypten_mnist_experiment
 from mnist.pysyft.pysyft_mnist import run_pysyft_mnist_experiment
+from mnist.graphene.graphene_mnist import run_graphene_rest_mnist_experiment
 
 MNIST_FC_MODEL_PATH = 'mnist/models/alice_fc3_model.pth'
 MNIST_CONVNET_MODEL_PATH = 'mnist/models/alice_conv1_model.pth'
@@ -33,8 +35,12 @@ def run_mnist_fully_connected_experiment(framework, should_retrain_model=False):
         train_mnist_model(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
         run_crypten_mnist_experiment(FULLY_CONNECTED3_MODEL_TYPE, MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
-    else:
+    elif framework == "pysyft":
         run_pysyft_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    elif framework == "graphene":
+        run_graphene_rest_mnist_experiment(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    else:
+        print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
 
 def run_mnist_conv_experiment(framework, should_retrain_model=False):
@@ -42,8 +48,12 @@ def run_mnist_conv_experiment(framework, should_retrain_model=False):
         train_mnist_model(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
     if framework == 'crypten':
         run_crypten_mnist_experiment(CONV_1_MODEL_TYPE, MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
-    else:
+    elif framework == "pysyft":
         run_pysyft_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    elif framework == "graphene":
+        run_graphene_rest_mnist_experiment(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    else:
+        print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
 
 def run_malaria_experiment(framework, should_retrain_model=False):
@@ -51,8 +61,12 @@ def run_malaria_experiment(framework, should_retrain_model=False):
         train_malaria_model(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
     if framework == 'crypten':
         run_crypten_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
-    else:
+    elif framework == "pysyft":
         run_pysyft_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    elif framework == "graphene":
+        run_graphene_rest_malaria_experiment(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+    else:
+        print("Please supply a valid framework. Can be either: pysyft, crypten or graphene ")
 
 
 if __name__ == "__main__":
@@ -60,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument('--experiment_name', type=str, default='',
                         help='The experiment name. Can be either: mnist_fc, mnist_conv or malaria_conv')
     parser.add_argument('--framework', type=str, default='',
-                        help='The framework name. Can be either: pysyft or crypten')
+                        help='The framework name. Can be either: pysyft, crypten or graphene')
     parser.add_argument('--retrain', default=False, action="store_true",
                         help='Whether to retrain the model. Default False.')
     config = parser.parse_args()

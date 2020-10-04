@@ -5,8 +5,10 @@ from main import MALARIA_CONVNET_MODEL_PATH, MNIST_FC_MODEL_PATH, MNIST_CONVNET_
     MNIST_DATA_PATH
 from malaria.crypten.crypten_malaria import crypten_malaria_benchmark
 from malaria.pysyft.pysyft_malaria import pysyft_benchmark_malaria
+from malaria.graphene.graphene_malaria import graphene_rest_benchmark_malaria
 from mnist.crypten.crypten_mnist import crypten_mnist_benchmark
 from mnist.pysyft.pysyft_mnist import pysyft_benchmark_mnist
+from mnist.graphene.graphene_mnist import graphene_rest_benchmark_mnist
 
 
 def benchmark_crypten():
@@ -33,6 +35,18 @@ def benchmark_pysyft():
     pysyft_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
 
 
+def benchmark_graphene_rest():
+    print("====================================================================================")
+    print("Benchmarking Graphene on the MNIST dataset using the Fully Connected model.")
+    graphene_rest_benchmark_mnist(MNIST_FC_MODEL_PATH, MNIST_DATA_PATH)
+    print("====================================================================================")
+    print("Benchmarking Graphene on the MNIST dataset using the Convolutional model.")
+    graphene_rest_benchmark_mnist(MNIST_CONVNET_MODEL_PATH, MNIST_DATA_PATH)
+    print("====================================================================================")
+    print("Benchmarking Graphene on the Malaria dataset using the Convolutional model.")
+    graphene_rest_benchmark_malaria(MALARIA_CONVNET_MODEL_PATH, MALARIA_DATA_PATH)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--framework', type=str, default='',
@@ -43,5 +57,7 @@ if __name__ == "__main__":
         benchmark_crypten()
     elif config.framework == 'pysyft':
         benchmark_pysyft()
+    elif config.framework == 'graphene':
+        benchmark_graphene_rest()
     else:
-        print("Please supply a valid framework type. Can be either: crypten or pysyft.")
+        print("Please supply a valid framework type. Can be either: crypten, pysyft or graphene.")
