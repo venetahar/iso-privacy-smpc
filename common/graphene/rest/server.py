@@ -18,7 +18,7 @@ from common.constants import MODELS
 
 app = Flask(__name__)
 
-WORKDIR = 'rest/workdir'
+ROOTDIR = '../../..'
 
 transforms = {
     "mnist": mnist_transform,
@@ -45,11 +45,12 @@ def extract_model_key():
 
 
 def load_model(model_filename):
-    from common.utils.sys_utils import cd
 
+    from common.utils.sys_utils import cd
     from os.path import dirname, abspath, join
-    d = dirname(dirname(abspath(__file__)))
-    actual_workdir = join(d, WORKDIR)
+
+    d = dirname(abspath(__file__))
+    actual_workdir = join(d, ROOTDIR)
 
     with cd(actual_workdir):
         return torch.load(model_filename)
@@ -150,3 +151,4 @@ model = load_model(MODELS[selected_model])
 
 if __name__ == '__main__':
     app.run()
+
