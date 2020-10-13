@@ -150,5 +150,5 @@ model = load_model(MODELS[selected_model])
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=5000)
 
