@@ -1,9 +1,9 @@
-import torch
+from torch import load, no_grad
 from flask import Flask, request, abort, Response, json
 from werkzeug.utils import secure_filename
 
-import sys
-sys.path.append("../..")
+from sys import path
+path.append("../..")
 
 # required to successfully load saved model
 from malaria.common.conv_pool_model import ConvPoolModel
@@ -53,7 +53,7 @@ def load_model(model_filename):
     actual_workdir = join(d, ROOTDIR)
 
     with cd(actual_workdir):
-        return torch.load(model_filename)
+        return load(model_filename)
 
 
 def load_new_model(model_key):
@@ -81,7 +81,7 @@ def load_image(image_file, model_type):
 
 def test(in_model, data):
     in_model.eval()
-    with torch.no_grad():
+    with no_grad():
         outputs = in_model(data)
         prediction = outputs.argmax(dim=1)
 

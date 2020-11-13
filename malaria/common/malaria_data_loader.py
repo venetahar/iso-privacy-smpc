@@ -1,19 +1,18 @@
-import os
+from os import path
 
 from torch.utils.data.dataloader import DataLoader
-from torchvision import datasets
-from torchvision.transforms import transforms
+from torchvision.datasets import ImageFolder
+from torchvision.transforms.transforms import Compose, Resize, ToTensor, Normalize
 
 from malaria.common.constants import IMG_RESIZE, MALARIA_NORM_MEAN, MALARIA_NORM_STD, TRAIN_BATCH_SIZE
 
 
 def malaria_transform():
-    return transforms.Compose([
-        transforms.Resize(IMG_RESIZE),
-        transforms.ToTensor(),
-        transforms.Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
+    return Compose([
+        Resize(IMG_RESIZE),
+        ToTensor(),
+        Normalize(MALARIA_NORM_MEAN, MALARIA_NORM_STD)
     ])
-
 
 
 class MalariaDataLoader:
@@ -30,11 +29,11 @@ class MalariaDataLoader:
         self.test_batch_size = test_batch_size
         data_transforms = malaria_transform()
 
-        training_cell_images_path = os.path.join(self.data_path, 'cell_images', training_folder)
-        training_data = datasets.ImageFolder(training_cell_images_path, transform=data_transforms)
+        training_cell_images_path = path.join(self.data_path, 'cell_images', training_folder)
+        training_data = ImageFolder(training_cell_images_path, transform=data_transforms)
         self.train_loader = DataLoader(training_data, batch_size=TRAIN_BATCH_SIZE, shuffle=True, num_workers=2)
 
-        testing_cell_images_path = os.path.join(self.data_path, 'cell_images', testing_folder)
-        testing_data = datasets.ImageFolder(testing_cell_images_path, transform=data_transforms)
+        testing_cell_images_path = path.join(self.data_path, 'cell_images', testing_folder)
+        testing_data = ImageFolder(testing_cell_images_path, transform=data_transforms)
         self.test_loader = DataLoader(testing_data, batch_size=test_batch_size, shuffle=True, num_workers=2)
 

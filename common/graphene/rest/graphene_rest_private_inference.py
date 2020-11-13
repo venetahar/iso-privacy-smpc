@@ -1,7 +1,7 @@
 from common.private_inference import PrivateInference
 import requests
 
-from common.utils.pytorch_utils import *
+from common.utils.pytorch_utils import json2torch, torch2json
 
 
 class GrapheneRESTClientPrivateInference(PrivateInference):
@@ -41,13 +41,14 @@ class GrapheneRESTClientPrivateInference(PrivateInference):
         self.model = path_to_model
 
     def evaluate(self):
-        import torch
+        from torch import no_grad
+        from torch import tensor
+        import numpy
 
-        private_correct_predictions = 0
-        total_predictions = 0
-        with torch.no_grad():
+        private_correct_predictions = tensor(numpy.nextafter(0, 1))
+        total_predictions = numpy.nextafter(0, 1)
+        with no_grad():
             for batch_index, (data, target) in enumerate(self.test_data_loader.private_test_loader):
-                print("Performing inference for batch {}".format(batch_index))
 
                 pred = self.predict(data)
                 # done upstream on server to avoid disclosing prediction values
